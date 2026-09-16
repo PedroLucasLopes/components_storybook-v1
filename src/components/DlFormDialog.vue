@@ -24,6 +24,7 @@
  */
 import { computed, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 const props = withDefaults(
   defineProps<{
@@ -45,10 +46,12 @@ const props = withDefaults(
   }>(),
   {
     mode: 'create',
-    cancelLabel: 'Cancel',
+    cancelLabel: undefined,
     width: 560,
   },
 );
+
+const { t } = useDotlogText();
 
 const emit = defineEmits<{
   'update:modelValue': [open: boolean];
@@ -70,7 +73,7 @@ watch(
 );
 
 const primaryLabel = computed(
-  () => props.submitLabel ?? (props.mode === 'create' ? 'Create' : 'Save changes'),
+  () => props.submitLabel ?? (props.mode === 'create' ? t('form.create') : t('form.saveChanges')),
 );
 
 const requestClose = (): void => {
@@ -109,7 +112,7 @@ const close = (): void => {
         </div>
         <VBtn
           icon="mdi-close"
-          aria-label="Close"
+          :aria-label="t('common.close')"
           variant="text"
           size="small"
           density="comfortable"
@@ -140,7 +143,7 @@ const close = (): void => {
       <footer class="dl-form-dialog__foot">
         <slot name="secondary-action" />
         <VBtn variant="text" :disabled="submitting" @click="requestClose">
-          {{ cancelLabel }}
+          {{ cancelLabel ?? t('common.cancel') }}
         </VBtn>
         <VBtn
           color="primary"
@@ -156,13 +159,11 @@ const close = (): void => {
     <!-- Guarda de saída. Empilha sobre o formulário, que continua intacto. -->
     <VDialog v-model="confirmingClose" :max-width="400" persistent>
       <VCard rounded="lg" class="dl-form-dialog__guard">
-        <h3 class="dl-form-dialog__guard-title">Discard changes?</h3>
-        <p class="dl-form-dialog__guard-text">
-          What you typed has not been saved and will be lost.
-        </p>
+        <h3 class="dl-form-dialog__guard-title">{{ t('form.discardTitle') }}</h3>
+        <p class="dl-form-dialog__guard-text">{{ t('form.discardText') }}</p>
         <div class="dl-form-dialog__guard-actions">
-          <VBtn variant="text" @click="confirmingClose = false">Keep editing</VBtn>
-          <VBtn color="error" variant="flat" @click="close">Discard</VBtn>
+          <VBtn variant="text" @click="confirmingClose = false">{{ t('form.keepEditing') }}</VBtn>
+          <VBtn color="error" variant="flat" @click="close">{{ t('form.discard') }}</VBtn>
         </div>
       </VCard>
     </VDialog>

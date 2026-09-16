@@ -10,9 +10,10 @@ import Vuetify from 'vite-plugin-vuetify';
  * `vite.config.*` da raiz e mescla com o dele. Um `build.lib` mesclado ali
  * transformaria o `build-storybook` em build de pacote.
  *
- * **Vue e Vuetify ficam de fora do pacote.** São `peerDependencies`: duas cópias
- * do Vue na mesma página quebram `inject`, e é por `inject` que tema e permissão
- * chegam aos componentes.
+ * **Vue, vue-i18n e Vuetify ficam de fora do pacote.** São `peerDependencies`:
+ * duas cópias do Vue na mesma página quebram `inject`, e é por `inject` que tema,
+ * permissão e língua chegam aos componentes. Os textos internos do Vuetify
+ * (`vuetify/locale`) também ficam com a aplicação, e só os usados entram no build.
  *
  * **Cada componente do Vuetify sai importado.** No código-fonte, `<VBtn>` é só
  * uma tag: o Storybook registra o Vuetify inteiro, e a aplicação que compilava o
@@ -31,7 +32,7 @@ export default defineConfig({
       cssFileName: 'style',
     },
     rolldownOptions: {
-      external: [/^vue($|\/)/, /^vuetify($|\/)/],
+      external: [/^vue($|\/)/, /^vue-i18n($|\/)/, /^vuetify($|\/)/],
     },
     sourcemap: true,
     emptyOutDir: true,

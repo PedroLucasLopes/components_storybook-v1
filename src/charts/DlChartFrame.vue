@@ -19,6 +19,7 @@
  * espaço. Com duas ou mais, identidade nunca pode depender só de cor.
  */
 import { computed, ref } from 'vue';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 export interface ChartSeriesMeta {
   label: string;
@@ -43,9 +44,11 @@ const props = withDefaults(
   {
     tableHeaders: () => [],
     tableRows: () => [],
-    emptyMessage: 'No data for the selected period.',
+    emptyMessage: undefined,
   },
 );
+
+const { t } = useDotlogText();
 
 const showTable = ref(false);
 
@@ -67,8 +70,8 @@ const canToggleTable = computed(() => props.tableRows.length > 0);
     <VBtn
       v-if="canToggleTable"
       :icon="showTable ? 'mdi-chart-box-outline' : 'mdi-table'"
-      :aria-label="showTable ? 'Show chart' : 'Show data table'"
-      :title="showTable ? 'Show chart' : 'Show data table'"
+      :aria-label="showTable ? t('chart.showChart') : t('chart.showTable')"
+      :title="showTable ? t('chart.showChart') : t('chart.showTable')"
       variant="text"
       size="small"
       density="comfortable"
@@ -82,7 +85,7 @@ const canToggleTable = computed(() => props.tableRows.length > 0);
           <slot name="loading" />
         </div>
 
-        <p v-else-if="empty" key="empty" class="dl-chart__empty">{{ emptyMessage }}</p>
+        <p v-else-if="empty" key="empty" class="dl-chart__empty">{{ emptyMessage ?? t('chart.empty') }}</p>
 
         <div v-else-if="showTable" key="table" class="dl-chart__table-wrap">
           <table class="dl-chart__table">

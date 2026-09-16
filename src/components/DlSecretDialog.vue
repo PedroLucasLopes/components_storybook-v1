@@ -16,25 +16,22 @@
  * deve esquecer o valor. Nada vai para `localStorage`, log ou URL.
  */
 import { computed, ref, useId, watch } from 'vue';
+import { useDotlogText } from '../i18n/useDotlogText';
 import DlButton from './DlButton.vue';
 
-const props = withDefaults(
-  defineProps<{
-    modelValue: boolean;
-    title: string;
-    secret: string;
-    /** Nome do segredo, acima do valor. */
-    label?: string;
-    description?: string;
-    /** O que acontece se o segredo vazar ou se perder. */
-    warning?: string;
-    acknowledgeLabel?: string;
-  }>(),
-  {
-    label: 'Secret',
-    acknowledgeLabel: 'I stored this in a safe place',
-  },
-);
+const props = defineProps<{
+  modelValue: boolean;
+  title: string;
+  secret: string;
+  /** Nome do segredo, acima do valor. Sem valor, "Segredo" na língua corrente. */
+  label?: string;
+  description?: string;
+  /** O que acontece se o segredo vazar ou se perder. */
+  warning?: string;
+  acknowledgeLabel?: string;
+}>();
+
+const { t } = useDotlogText();
 
 const emit = defineEmits<{
   'update:modelValue': [open: boolean];
@@ -114,7 +111,7 @@ const valueId = useId();
         </div>
 
         <div class="dl-secret__field">
-          <label :for="valueId" class="dl-secret__label">{{ label }}</label>
+          <label :for="valueId" class="dl-secret__label">{{ label ?? t('secret.label') }}</label>
 
           <Transition name="dl-secret-swap" mode="out-in">
             <textarea
@@ -139,7 +136,7 @@ const valueId = useId();
               :prepend-icon="revealed ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
               @click="revealed = !revealed"
             >
-              {{ revealed ? 'Hide' : 'Reveal' }}
+              {{ revealed ? t('common.hide') : t('secret.reveal') }}
             </VBtn>
             <VBtn
               size="small"
@@ -148,14 +145,14 @@ const valueId = useId();
               :prepend-icon="copied ? 'mdi-check' : 'mdi-content-copy'"
               @click="copy"
             >
-              {{ copied ? 'Copied' : 'Copy' }}
+              {{ copied ? t('common.copied') : t('common.copy') }}
             </VBtn>
           </div>
         </div>
 
         <VCheckbox
           v-model="acknowledged"
-          :label="acknowledgeLabel"
+          :label="acknowledgeLabel ?? t('secret.acknowledge')"
           color="primary"
           density="comfortable"
           hide-details
@@ -163,7 +160,7 @@ const valueId = useId();
       </div>
 
       <footer class="dl-secret__foot">
-        <DlButton :disabled="!acknowledged" @click="close">Done</DlButton>
+        <DlButton :disabled="!acknowledged" @click="close">{{ t('secret.done') }}</DlButton>
       </footer>
     </VCard>
   </VDialog>

@@ -78,9 +78,9 @@ export const projectStatus: Record<string, StatusDefinition> = {
 /* ----------------------------- SSO: console ---------------------------- */
 
 /**
- * O que `GET /sso/me` devolve para cada papel do projeto do SSO. São as mesmas
- * rotas que `sso/scripts/bootstrap-sso.js` cadastra, então as stories mostram
- * exatamente o que cada papel veria no console.
+ * O que `GET /sso/me` poderia devolver para papéis de gestão do projeto do SSO.
+ * Os papéis do SSO nascem vazios e cada ambiente marca as próprias rotas; estes
+ * conjuntos são exemplos plausíveis para as stories, não um catálogo.
  */
 export const ssoViewerPermissions: Permission[] = [
   { path: '/project', method: 'GET' },

@@ -12,6 +12,7 @@
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 import { usePermissions } from '../access/usePermissions';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 export interface HeaderAction {
   key: string;
@@ -44,6 +45,7 @@ const emit = defineEmits<{
 
 const { can } = usePermissions();
 const { mdAndDown } = useDisplay();
+const { t } = useDotlogText();
 
 const visibleActions = computed(() =>
   props.actions.filter((action) => can(action.method, action.path)),
@@ -56,14 +58,14 @@ const visibleActions = computed(() =>
       <VBtn
         v-if="withMenu && mdAndDown"
         icon="mdi-menu"
-        aria-label="Open menu"
+        :aria-label="t('common.openMenu')"
         variant="text"
         density="comfortable"
         @click="emit('openMenu')"
       />
 
       <div class="dl-header__text">
-        <nav v-if="breadcrumbs.length" class="dl-header__crumbs" aria-label="Breadcrumb">
+        <nav v-if="breadcrumbs.length" class="dl-header__crumbs" :aria-label="t('header.breadcrumb')">
           <template v-for="(item, index) in breadcrumbs" :key="item.label">
             <button
               v-if="item.to && index < breadcrumbs.length - 1"

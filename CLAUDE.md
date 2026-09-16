@@ -2,29 +2,30 @@
 
 Componentes Vuetify, tokens de design e Storybook compartilhados pelos fronts do ecossistema SSO.
 
-É o contrato de **interface**, do mesmo jeito que [`@pedrolucaslopes/sso-client`](../sso-client/CLAUDE.md) é o
+É o contrato de **interface**, do mesmo jeito que [`@pedrolucaslopes/sso-client`](https://github.com/PedroLucasLopes/sso-lib-v1/blob/main/CLAUDE.md) é o
 contrato de **autenticação**. Tem repositório próprio,
-[`PedroLucasLopes/storybook-ui`](https://github.com/PedroLucasLopes/storybook-ui), e chega a cada front
+[`PedroLucasLopes/components_storybook-v1`](https://github.com/PedroLucasLopes/components_storybook-v1), e chega a cada front
 **pelo npm**. Nenhum front importa `../ui/src`, nem por alias, nem por `paths`, nem por link de pasta.
 
 ```bash
 npm run storybook        # localhost:6007
 npm run build-storybook
 npm run check:contrast   # valida a paleta contra a WCAG
+npm run check:locales    # confere as traduções dos componentes contra o en.json
 npm run type-check
 npm run build            # o pacote: dist/index.js, dist/style.css e as declarações
 ```
 
 > Projeto **independente**: repositório, `node_modules` e ciclo de versão próprios. Nesta máquina ele
 > mora em `ui/`, com `.git` próprio, como o `sso-client`; o diretório de fora não é repositório. Quem
-> consome é o `sso_plataforma`, e do mesmo jeito que qualquer front novo consumiria.
+> consome é o console do SSO, `plataforma_sso-v1`, do mesmo jeito que qualquer front novo consumiria.
 
 ---
 
 ## 📦 Distribuição
 
 O pacote é **`@pedrolucaslopes/dotlog-ui`**, privado, no GitHub Packages, publicado do repositório
-`storybook-ui`. O nome do repositório não precisa bater com o do pacote; o **escopo** do npm precisa ser
+`components_storybook-v1`. O nome do repositório não precisa bater com o do pacote; o **escopo** do npm precisa ser
 o dono no GitHub, em minúsculas.
 
 - **Publicar:** `npm version patch` e `git push --follow-tags`. A tag `v*` dispara
@@ -35,9 +36,10 @@ o dono no GitHub, em minúsculas.
   `//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}`. O token, com `read:packages`, vem do ambiente.
   No Docker entra como secret do BuildKit, nunca como `ARG` ou `ENV`, que ficam na imagem. Com a
   variável ausente, `npm run` continua funcionando; só a instalação do pacote falha.
-- **Consumir:** `vue` e `vuetify` são `peerDependencies`. A aplicação importa
-  `@pedrolucaslopes/dotlog-ui/styles` **depois** de `vuetify/styles`, carrega `@mdi/font` e as fontes
-  Roboto e Roboto Mono, e chama `bindVuetifyTheme()` dentro do `App.vue`. O `README.md` tem o exemplo.
+- **Consumir:** `vue` e `vuetify` são `peerDependencies`; `vue-i18n` também, opcional, para quem
+  traduz. A aplicação importa `@pedrolucaslopes/dotlog-ui/styles` **depois** de `vuetify/styles`,
+  carrega `@mdi/font` e as fontes Roboto e Roboto Mono, chama `bindVuetifyTheme()` dentro do `App.vue`
+  e liga a língua com `createDotlogLocale`. O `README.md` tem o exemplo.
 
 | Vai no pacote | Fica fora |
 |---|---|
@@ -83,9 +85,51 @@ clarear (`surfaceVariant`), não escurecer em volta.
 
 ## 🌐 Idioma: inglês na API, português no comentário
 
-É a convenção do repositório inteiro, a mesma do `sso-client`. Prop, evento, tipo, rótulo de tela e
-título de story em **inglês**; comentário e docstring em **português**, porque explicam decisão para
-quem mantém.
+É a convenção do repositório inteiro, a mesma do `sso-client`. Prop, evento, tipo e título de story
+em **inglês**; comentário e docstring em **português**, porque explicam decisão para quem mantém. O
+texto que aparece na tela não é escrito em língua nenhuma dentro do componente: vem da tradução.
+
+## 🗣️ Texto de tela em três línguas
+
+Os componentes falam `en`, `es` e `pt-BR`, cada língua um JSON em `src/i18n/locales/`, e seguem a
+língua corrente da aplicação.
+
+**A aplicação traduz com vue-i18n; a biblioteca, com os próprios JSON.** Os textos dos componentes
+não entram no vue-i18n da aplicação: `useDotlogText` lê a língua corrente pelo `useLocale()` do
+Vuetify e resolve no catálogo daqui. Quem consome não registra, não mescla e não conhece estas
+chaves. Língua que a aplicação tem e a biblioteca não tem cai no inglês, só nos componentes.
+
+**Uma língua só para os três.** A aplicação cria o vue-i18n dela e passa ao Vuetify por
+`createDotlogLocale({ i18n, useI18n })`, que:
+
+- liga o Vuetify ao vue-i18n pelo adaptador oficial, então trocar `i18n.global.locale` troca tudo;
+- põe em cada língua registrada os textos internos do Vuetify (`$vuetify`), senão o vue-i18n
+  mostraria a chave crua num seletor vazio. O que a aplicação declarar em `$vuetify` prevalece;
+- mantém `<html lang>` igual à língua, para o leitor de tela pronunciar certo.
+
+**A língua inicial** sai de `preferredLocale`: a escolha guardada neste navegador (`dl.locale`), senão
+as línguas do navegador, senão a de reserva. Quem pede `pt-PT` recebe `pt-BR` antes de inglês. O
+armazenamento é lido de forma síncrona, pelo mesmo motivo do tema.
+
+**O menu do usuário lista o que a aplicação registrou.** `useLanguages` lê as línguas das mensagens
+do Vuetify; `DlUserMenu` mostra cada uma com o nome nela mesma (`Intl.DisplayNames`) e a bandeira do
+país que o código completa (`Intl.Locale.maximize`: `en` vira Estados Unidos). Língua nova na
+aplicação é só um JSON. Com uma língua só, a seção some.
+
+**Bandeira em SVG, não emoji.** O Windows não desenha emoji de bandeira e mostra as duas letras.
+`DlFlag` tem Brasil, Estados Unidos e Espanha; país sem desenho aparece como o código dele. Bandeira
+usa as cores oficiais, a única exceção à regra de não escrever hex.
+
+**O formato é o do vue-i18n**, para os JSON dos dois lados serem escritos igual: `{nome}` é parâmetro,
+`a | b` é plural por `count`, e `@` literal precisa ser `{'@'}`. A biblioteca implementa o subconjunto
+em `format.ts`; `check:locales` compila cada mensagem com o compilador do vue-i18n de verdade.
+
+**Frase com marcação dentro** (`Para confirmar, digite <code>X</code>`) usa `splitAround`: divide a
+frase traduzida no ponto do parâmetro, e a ordem das palavras fica com cada língua.
+
+Língua nova nos componentes é um JSON com as mesmas chaves do `en.json`, registrado em `catalog.ts`.
+O TypeScript recusa chave faltando; `npm run check:locales` recusa chave sobrando, parâmetro diferente
+e plural com outro número de formas. O workflow de publicação roda os dois.
 
 ---
 
@@ -282,7 +326,8 @@ Vieram com o console do SSO e servem a qualquer front do ecossistema.
 | Componente | Para quê | Decisão que vale lembrar |
 |---|---|---|
 | `DlAppShell` | menu lateral, barra superior e conteúdo | largura máxima no conteúdo, link de pular para o conteúdo, barra de carregamento única |
-| `DlUserMenu` | quem entrou, tema e saída | tema em três escolhas; sair por último e em vermelho; iniciais, sem foto do provedor |
+| `DlUserMenu` | quem entrou, tema, língua e saída | tema em três escolhas; línguas as que a aplicação registrou, com nome e bandeira; sair por último e em vermelho; iniciais, sem foto do provedor |
+| `DlFlag` | bandeira de país | SVG, não emoji; decorativa, com o nome sempre ao lado; país sem desenho vira o código |
 | `DlSignIn` | a tela de login do IdP | só oferece provedor com pedido pendente; diz a aplicação; erro por código, nunca texto da URL |
 | `DlSecretDialog` | segredo mostrado uma vez | mascarado por padrão; copiar sem revelar; fechar exige confirmar que guardou |
 | `DlTabs` | abas de tela de detalhe | aba sem permissão some, e a selecionada cai para a primeira visível |
@@ -358,6 +403,13 @@ pasta de onde foi chamado como pacote a instalar, gravou `"rent-dashboard": "fil
 `package.json` e criou uma junção em `node_modules` apontando para a pasta de cima. Instale sempre de
 dentro da pasta do projeto. `npm run <script> --prefix` não tem o problema.
 
+⚠️ **Nada exportado pelo `index.ts` pode vir de `i18n/catalog.ts`.** A declaração dele importa
+`./locales/en.json`, e o `vue-tsc` não copia JSON para o `dist`: a aplicação receberia um `.d.ts`
+apontando para um arquivo que não existe. Por isso a lista de línguas da biblioteca não é exportada.
+
+⚠️ **`@` solto numa tradução quebra no vue-i18n.** Ele lê `@` como início de mensagem ligada, e
+`marina@example.com` não compila. Escreva `marina{'@'}example.com`. O `check:locales` pega.
+
 Para varrer todo aviso de aninhamento de uma vez:
 `npm run build-storybook 2>&1 | grep -i "cannot be child"`.
 
@@ -377,7 +429,14 @@ src/
 │  └─ Colors.stories.ts # paleta e tabela de contraste
 ├─ access/
 │  └─ usePermissions.ts # `can('POST', '/equipment')`, mesmo matcher do servidor
-├─ mocks/              # dados de exemplo das stories. Nada vai para o pacote
+├─ i18n/
+│  ├─ locales/         # en.json, es.json, pt-BR.json: os textos dos componentes
+│  ├─ catalog.ts       # resolve a chave na língua corrente, com o inglês de reserva
+│  ├─ format.ts        # {parâmetro} e plural, o subconjunto do vue-i18n
+│  ├─ languages.ts     # língua inicial, correspondência, nome e país de cada língua
+│  ├─ useLanguages.ts  # as línguas registradas e a troca, para o menu do usuário
+│  └─ createDotlogLocale.ts # liga Vuetify, biblioteca e vue-i18n da aplicação à mesma língua
+├─ mocks/              # dados e traduções de exemplo das stories. Nada vai para o pacote
 ├─ data/               # inferência de coluna, derivação de menu, árvore de rotas
 ├─ feedback/           # toast (estado em módulo, sem Pinia) + host
 ├─ charts/             # paleta validada, moldura, barra, rosca, área
@@ -388,8 +447,11 @@ src/
 
 ## ✅ Invariantes ao alterar
 
-- Componente não escreve hex. Escreve token.
+- Componente não escreve hex. Escreve token. A exceção é `DlFlag`: bandeira tem cor oficial.
 - API em inglês, comentário em português.
+- Texto de tela não nasce no componente. Vai para `src/i18n/locales/`, nas três línguas, e sai por
+  `useDotlogText`. Prop de rótulo tem padrão `undefined` e cai na tradução.
+- Mexeu numa tradução, rode `npm run check:locales`.
 - Story usa dado de `src/mocks/`, nunca dado real nem `Lorem ipsum`. Conteúdo plausível é o que
   revela coluna que estoura e pastilha que quebra em duas linhas.
 - Todo componente novo nasce com story nos **dois** temas. A barra do Storybook troca sem sair da

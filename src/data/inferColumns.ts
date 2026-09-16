@@ -1,4 +1,5 @@
 import type { Column } from '../components/DlDataTable.vue';
+import { translate } from '../i18n/catalog';
 
 /**
  * Descobre as colunas a partir da própria resposta.
@@ -12,7 +13,7 @@ import type { Column } from '../components/DlDataTable.vue';
  * | Sinal na amostra | Vira |
  * |---|---|
  * | só números | alinhado à direita, monoespaçado |
- * | `true`/`false` | Yes / No |
+ * | `true`/`false` | Sim / Não, na língua de `locale` |
  * | data ISO | data formatada |
  * | UUID, ou hex de 32+ | monoespaçado e **secundário** |
  * | objeto ou lista | ignorado, ver abaixo |
@@ -47,6 +48,10 @@ export interface InferOptions {
   overrides?: Record<string, Partial<Column<Record<string, unknown>>>>;
   /** Quantas linhas olhar para decidir o tipo. */
   sample?: number;
+  /**
+   * Língua de data, número e sim/não. Passe a corrente da aplicação, senão a
+   * coluna fica em inglês numa tela traduzida.
+   */
   locale?: string;
 }
 
@@ -118,7 +123,7 @@ const formatterFor = (
   locale: string,
 ): ((row: Record<string, unknown>) => string) | undefined => {
   if (kind === 'boolean') {
-    return (row) => (row[key] ? 'Yes' : 'No');
+    return (row) => translate(locale, row[key] ? 'data.yes' : 'data.no');
   }
 
   if (kind === 'date') {

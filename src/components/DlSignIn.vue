@@ -25,6 +25,8 @@
  * Ir ao provedor leva um instante. Sem retorno a pessoa clica de novo, e o
  * segundo clique abre outra ida ao provedor por cima da primeira.
  */
+import { computed } from 'vue';
+import { splitAround, useDotlogText } from '../i18n/useDotlogText';
 import DlButton from './DlButton.vue';
 import DlSkeleton from './DlSkeleton.vue';
 
@@ -62,6 +64,11 @@ withDefaults(
 );
 
 const emit = defineEmits<{ select: [provider: SignInProvider] }>();
+
+const { t } = useDotlogText();
+
+/* O nome da aplicação vai em negrito, no lugar que cada língua der a ele. */
+const continueTo = computed(() => splitAround((marker) => t('signIn.continueTo', { application: marker })));
 </script>
 
 <template>
@@ -75,7 +82,7 @@ const emit = defineEmits<{ select: [provider: SignInProvider] }>();
       </header>
 
       <div v-if="state === 'loading'" class="dl-signin__loading">
-        <h1 id="dl-signin-title" class="dl-signin__sr">Loading sign-in</h1>
+        <h1 id="dl-signin-title" class="dl-signin__sr">{{ t('signIn.loading') }}</h1>
         <DlSkeleton height="26px" width="46%" />
         <DlSkeleton height="14px" width="72%" />
         <DlSkeleton height="46px" variant="block" />
@@ -85,11 +92,8 @@ const emit = defineEmits<{ select: [provider: SignInProvider] }>();
         <span class="dl-signin__blocked-icon" aria-hidden="true">
           <VIcon icon="mdi-link-variant-off" size="26" />
         </span>
-        <h1 id="dl-signin-title" class="dl-signin__title">Open the application to sign in</h1>
-        <p class="dl-signin__text">
-          Sign-in starts in the application you want to use. Open it again and it
-          will bring you back here.
-        </p>
+        <h1 id="dl-signin-title" class="dl-signin__title">{{ t('signIn.blockedTitle') }}</h1>
+        <p class="dl-signin__text">{{ t('signIn.blockedText') }}</p>
 
         <div v-if="error" class="dl-signin__error" role="alert">
           <VIcon icon="mdi-alert-circle-outline" size="18" class="dl-signin__error-icon" />
@@ -101,12 +105,12 @@ const emit = defineEmits<{ select: [provider: SignInProvider] }>();
       </div>
 
       <div v-else class="dl-signin__ready">
-        <h1 id="dl-signin-title" class="dl-signin__title">Sign in</h1>
+        <h1 id="dl-signin-title" class="dl-signin__title">{{ t('signIn.title') }}</h1>
         <p class="dl-signin__text">
           <template v-if="application">
-            to continue to <strong class="dl-signin__app">{{ application }}</strong>
+            {{ continueTo[0] }}<strong class="dl-signin__app">{{ application }}</strong>{{ continueTo[1] }}
           </template>
-          <template v-else>to continue</template>
+          <template v-else>{{ t('signIn.continue') }}</template>
         </p>
 
         <div v-if="error" class="dl-signin__error" role="alert">
@@ -131,16 +135,13 @@ const emit = defineEmits<{ select: [provider: SignInProvider] }>();
             class="dl-signin__provider"
             @click="emit('select', provider)"
           >
-            Continue with {{ provider.label }}
+            {{ t('signIn.continueWith', { provider: provider.label }) }}
           </DlButton>
         </div>
       </div>
 
       <footer class="dl-signin__foot">
-        <slot name="footer">
-          Your password stays with your identity provider. Applications only receive
-          who you are and what you can access.
-        </slot>
+        <slot name="footer">{{ t('signIn.footer') }}</slot>
       </footer>
     </section>
   </main>

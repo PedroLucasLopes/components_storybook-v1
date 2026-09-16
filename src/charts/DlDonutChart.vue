@@ -17,6 +17,7 @@
  * separar sem borda; anel fino; sem sombra.
  */
 import { computed, ref } from 'vue';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 export interface DonutSlice {
   label: string;
@@ -33,8 +34,12 @@ const props = withDefaults(
     size?: number;
     thickness?: number;
   }>(),
-  { totalLabel: 'Total', size: 190, thickness: 22 },
+  { totalLabel: undefined, size: 190, thickness: 22 },
 );
+
+const { t } = useDotlogText();
+
+const totalText = computed(() => props.totalLabel ?? t('chart.total'));
 
 const display = (value: number): string =>
   props.format ? props.format(value) : String(value);
@@ -74,7 +79,7 @@ const centreValue = computed(() =>
 );
 
 const centreLabel = computed(() =>
-  hovered.value === null ? props.totalLabel : props.data[hovered.value].label,
+  hovered.value === null ? totalText.value : props.data[hovered.value].label,
 );
 </script>
 
@@ -86,7 +91,7 @@ const centreLabel = computed(() =>
       :height="size"
       class="dl-donut__svg"
       role="img"
-      :aria-label="`${totalLabel}: ${display(total)}`"
+      :aria-label="`${totalText}: ${display(total)}`"
     >
       <g :transform="`rotate(-90 ${size / 2} ${size / 2})`">
         <circle

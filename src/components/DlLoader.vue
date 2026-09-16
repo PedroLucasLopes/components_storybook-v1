@@ -21,6 +21,7 @@
  * de indicador lê como defeito. Abaixo do limiar, nada aparece.
  */
 import { ref, watch } from 'vue';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 const props = withDefaults(
   defineProps<{
@@ -33,6 +34,8 @@ const props = withDefaults(
   }>(),
   { variant: 'bar', delay: 220 },
 );
+
+const { t } = useDotlogText();
 
 const visible = ref(false);
 
@@ -65,14 +68,14 @@ watch(
       aria-busy="true"
     >
       <template v-if="variant === 'bar'">
-        <span class="dl-loader__sr">{{ message ?? 'Loading' }}</span>
+        <span class="dl-loader__sr">{{ message ?? t('common.loading') }}</span>
         <span class="dl-loader__track"><span class="dl-loader__indicator" /></span>
       </template>
 
       <template v-else>
         <VProgressCircular :size="variant === 'overlay' ? 38 : 28" width="3" color="primary" indeterminate />
         <p v-if="message" class="dl-loader__message">{{ message }}</p>
-        <span v-else class="dl-loader__sr">Loading</span>
+        <span v-else class="dl-loader__sr">{{ t('common.loading') }}</span>
       </template>
     </div>
   </Transition>

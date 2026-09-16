@@ -24,6 +24,7 @@
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 import { usePermissions } from '../access/usePermissions';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 export interface NavItem {
   key: string;
@@ -69,6 +70,7 @@ const emit = defineEmits<{
 
 const { can } = usePermissions();
 const { mdAndDown } = useDisplay();
+const { t } = useDotlogText();
 
 /** Grupos e itens que esta pessoa alcança. Grupo vazio não sobra. */
 const visibleGroups = computed(() =>
@@ -113,7 +115,7 @@ const choose = (item: NavItem): void => {
       </div>
     </header>
 
-    <nav class="dl-nav__body" :aria-label="title ?? 'Main navigation'">
+    <nav class="dl-nav__body" :aria-label="title ?? t('nav.main')">
       <div v-for="group in visibleGroups" :key="group.key" class="dl-nav__group">
         <p v-if="group.title && !rail" class="dl-nav__group-title">{{ group.title }}</p>
 
@@ -137,9 +139,7 @@ const choose = (item: NavItem): void => {
         </VList>
       </div>
 
-      <p v-if="visibleGroups.length === 0" class="dl-nav__empty">
-        Your role does not unlock any area of this application.
-      </p>
+      <p v-if="visibleGroups.length === 0" class="dl-nav__empty">{{ t('nav.empty') }}</p>
     </nav>
 
     <template #append>
@@ -148,8 +148,8 @@ const choose = (item: NavItem): void => {
         <VBtn
           v-if="!mdAndDown"
           :icon="collapsed ? 'mdi-chevron-right' : 'mdi-chevron-left'"
-          :aria-label="collapsed ? 'Expand menu' : 'Collapse menu'"
-          :title="collapsed ? 'Expand menu' : 'Collapse menu'"
+          :aria-label="collapsed ? t('nav.expand') : t('nav.collapse')"
+          :title="collapsed ? t('nav.expand') : t('nav.collapse')"
           variant="text"
           size="small"
           density="comfortable"

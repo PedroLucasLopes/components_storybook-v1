@@ -33,6 +33,7 @@
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 import { usePermissions } from '../access/usePermissions';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 export interface Column<Row> {
   /** Chave do objeto, ou identificador livre quando houver slot `col-<key>`. */
@@ -83,8 +84,8 @@ const props = withDefaults(
   {
     rowKey: 'id',
     actions: () => [],
-    emptyTitle: 'Nothing here',
-    emptyDescription: 'No record matches what was requested.',
+    emptyTitle: undefined,
+    emptyDescription: undefined,
     page: 1,
     limit: 20,
     density: 'comfortable',
@@ -100,6 +101,7 @@ const emit = defineEmits<{
 
 const { can } = usePermissions();
 const { mdAndDown } = useDisplay();
+const { t } = useDotlogText();
 
 /** Ações que esta pessoa pode exercer. As demais nem entram no DOM. */
 const visibleActions = computed(() =>
@@ -131,14 +133,14 @@ const hasPrevious = computed(() => props.page > 1);
     <!-- Carregando: esqueleto com a forma da tabela, não um giro no vazio.
          A pessoa já vê onde o conteúdo vai aparecer. -->
     <div v-if="loading" class="dl-table__skeleton" role="status" aria-live="polite">
-      <span class="dl-table__sr">Loading</span>
+      <span class="dl-table__sr">{{ t('common.loading') }}</span>
       <div v-for="n in 6" :key="n" class="dl-table__skeleton-row" />
     </div>
 
     <div v-else-if="rows.length === 0" class="dl-table__empty">
       <VIcon icon="mdi-tray-remove" size="40" class="dl-table__empty-icon" />
-      <p class="dl-table__empty-title">{{ emptyTitle }}</p>
-      <p class="dl-table__empty-text">{{ emptyDescription }}</p>
+      <p class="dl-table__empty-title">{{ emptyTitle ?? t('table.emptyTitle') }}</p>
+      <p class="dl-table__empty-text">{{ emptyDescription ?? t('table.emptyDescription') }}</p>
       <slot name="empty-action" />
     </div>
 
@@ -187,7 +189,7 @@ const hasPrevious = computed(() => props.page > 1);
               {{ column.label }}
             </th>
             <th v-if="visibleActions.length" class="dl-table__actions-head" scope="col">
-              <span class="dl-table__sr">Actions</span>
+              <span class="dl-table__sr">{{ t('table.actions') }}</span>
             </th>
           </tr>
         </thead>
@@ -231,8 +233,8 @@ const hasPrevious = computed(() => props.page > 1);
       </table>
     </div>
 
-    <nav v-if="paged && !loading && rows.length > 0" class="dl-table__pager" aria-label="Pagination">
-      <span class="dl-table__pager-info">Page {{ page }}</span>
+    <nav v-if="paged && !loading && rows.length > 0" class="dl-table__pager" :aria-label="t('table.pagination')">
+      <span class="dl-table__pager-info">{{ t('table.page', { page }) }}</span>
       <div class="dl-table__pager-buttons">
         <VBtn
           :disabled="!hasPrevious"
@@ -241,7 +243,7 @@ const hasPrevious = computed(() => props.page > 1);
           size="small"
           @click="emit('update:page', page - 1)"
         >
-          Previous
+          {{ t('table.previous') }}
         </VBtn>
         <VBtn
           :disabled="!hasNext"
@@ -250,7 +252,7 @@ const hasPrevious = computed(() => props.page > 1);
           size="small"
           @click="emit('update:page', page + 1)"
         >
-          Next
+          {{ t('table.next') }}
         </VBtn>
       </div>
     </nav>

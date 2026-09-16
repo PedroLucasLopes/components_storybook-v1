@@ -21,9 +21,11 @@
  * continua chegando; só não desliza.
  */
 import { computed } from 'vue';
+import { useDotlogText } from '../i18n/useDotlogText';
 import { useToasts, type Toast, type ToastKind } from './useToast';
 
 const { toasts, dismiss, pause, resume } = useToasts();
+const { t } = useDotlogText();
 
 const KIND_ICON: Record<ToastKind, string> = {
   success: 'mdi-check-circle-outline',
@@ -39,8 +41,8 @@ const KIND_COLOR: Record<ToastKind, string> = {
   error: 'error',
 };
 
-const alerts = computed(() => toasts.value.filter((t) => t.kind === 'error'));
-const statuses = computed(() => toasts.value.filter((t) => t.kind !== 'error'));
+const alerts = computed(() => toasts.value.filter((toast) => toast.kind === 'error'));
+const statuses = computed(() => toasts.value.filter((toast) => toast.kind !== 'error'));
 
 const onAction = (item: Toast): void => {
   item.action?.handler();
@@ -79,7 +81,7 @@ const onAction = (item: Toast): void => {
           </div>
           <VBtn
             icon="mdi-close"
-            aria-label="Dismiss"
+            :aria-label="t('common.dismiss')"
             variant="text"
             size="x-small"
             density="comfortable"
@@ -119,7 +121,7 @@ const onAction = (item: Toast): void => {
           </div>
           <VBtn
             icon="mdi-close"
-            aria-label="Dismiss"
+            :aria-label="t('common.dismiss')"
             variant="text"
             size="x-small"
             density="comfortable"

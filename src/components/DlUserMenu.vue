@@ -1,10 +1,15 @@
 <script setup lang="ts">
 /**
- * Menu de quem entrou: identidade, tema e saída.
+ * Menu de quem entrou: identidade, tema, língua e saída.
  *
  * **O tema tem três escolhas, não um interruptor.** "Seguir o sistema" é uma
  * preferência própria, e é a padrão. Um interruptor claro/escuro obrigaria a
  * pessoa a abrir mão dela para mudar uma vez. Ver `useThemePreferences`.
+ *
+ * **As línguas são as que a aplicação registrou.** A lista sai de
+ * `useLanguages`: cada JSON de tradução da aplicação vira uma opção, com o nome
+ * na própria língua e a bandeira do país. Com uma língua só a seção nem
+ * aparece, porque uma opção não é escolha.
  *
  * **Sair fica por último, separado e em vermelho.** É a única ação do menu que
  * tira a pessoa do que ela estava fazendo, e não pode ser clicada por engano
@@ -14,8 +19,11 @@
  * a cada tela avisaria o Google de cada uso do console.
  */
 import { computed, useId } from 'vue';
+import { useDotlogText } from '../i18n/useDotlogText';
+import { useLanguages } from '../i18n/useLanguages';
 import type { ThemeMode } from '../theme/useTheme';
 import DlButton from './DlButton.vue';
+import DlFlag from './DlFlag.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -31,16 +39,24 @@ const props = withDefaults(
   { signingOut: false, compact: false },
 );
 
+/** Menu aberto. Com `v-model:open`, quem usa abre e fecha por fora. */
+const open = defineModel<boolean>('open', { default: false });
+
 const emit = defineEmits<{
   'update:themeMode': [mode: ThemeMode];
+  /** Depois da troca, para quem quiser guardar a escolha também em outro lugar. */
+  'update:locale': [code: string];
   signOut: [];
 }>();
 
-const THEME_OPTIONS: { value: ThemeMode; label: string; icon: string }[] = [
-  { value: 'light', label: 'Light', icon: 'mdi-white-balance-sunny' },
-  { value: 'dark', label: 'Dark', icon: 'mdi-weather-night' },
-  { value: 'system', label: 'System', icon: 'mdi-monitor' },
-];
+const { t } = useDotlogText();
+const { locale, languages, setLocale } = useLanguages();
+
+const themeOptions = computed<{ value: ThemeMode; label: string; icon: string }[]>(() => [
+  { value: 'light', label: t('userMenu.themeLight'), icon: 'mdi-white-balance-sunny' },
+  { value: 'dark', label: t('userMenu.themeDark'), icon: 'mdi-weather-night' },
+  { value: 'system', label: t('userMenu.themeSystem'), icon: 'mdi-monitor' },
+]);
 
 const initials = computed(() => {
   const words = props.name.trim().split(/\s+/).filter(Boolean);
@@ -51,23 +67,31 @@ const initials = computed(() => {
 });
 
 const themeLabelId = useId();
+const languageLabelId = useId();
 
 const chooseTheme = (value: unknown): void => {
   if (value === 'light' || value === 'dark' || value === 'system') {
     emit('update:themeMode', value);
   }
 };
+
+const chooseLanguage = (code: string): void => {
+  if (code === locale.value) return;
+
+  setLocale(code);
+  emit('update:locale', code);
+};
 </script>
 
 <template>
-  <VMenu location="bottom end" :offset="8" :close-on-content-click="false">
+  <VMenu v-model="open" location="bottom end" :offset="8" :close-on-content-click="false">
     <template #activator="{ props: activator }">
       <button
         type="button"
         class="dl-user__trigger"
         :class="{ 'dl-user__trigger--compact': compact }"
         v-bind="activator"
-        :aria-label="`Account menu for ${name}`"
+        :aria-label="t('userMenu.accountMenu', { name })"
       >
         <span class="dl-user__avatar" aria-hidden="true">{{ initials }}</span>
         <span v-if="!compact" class="dl-user__trigger-text">
@@ -89,7 +113,7 @@ const chooseTheme = (value: unknown): void => {
       </header>
 
       <div class="dl-user__section">
-        <p :id="themeLabelId" class="dl-user__section-title">Theme</p>
+        <p :id="themeLabelId" class="dl-user__section-title">{{ t('userMenu.theme') }}</p>
         <VBtnToggle
           :model-value="themeMode"
           :aria-labelledby="themeLabelId"
@@ -101,7 +125,7 @@ const chooseTheme = (value: unknown): void => {
           @update:model-value="chooseTheme"
         >
           <VBtn
-            v-for="option in THEME_OPTIONS"
+            v-for="option in themeOptions"
             :key="option.value"
             :value="option.value"
             :prepend-icon="option.icon"
@@ -110,6 +134,31 @@ const chooseTheme = (value: unknown): void => {
             {{ option.label }}
           </VBtn>
         </VBtnToggle>
+      </div>
+
+      <div v-if="languages.length > 1" class="dl-user__section dl-user__section--languages">
+        <p :id="languageLabelId" class="dl-user__section-title">{{ t('userMenu.language') }}</p>
+        <div role="group" :aria-labelledby="languageLabelId" class="dl-user__languages">
+          <button
+            v-for="language in languages"
+            :key="language.code"
+            type="button"
+            class="dl-user__language"
+            :class="{ 'dl-user__language--active': language.code === locale }"
+            :aria-pressed="language.code === locale"
+            @click="chooseLanguage(language.code)"
+          >
+            <DlFlag :region="language.region" />
+            <span class="dl-user__language-name" :lang="language.code">{{ language.name }}</span>
+            <VIcon
+              v-if="language.code === locale"
+              icon="mdi-check"
+              size="18"
+              class="dl-user__language-check"
+              aria-hidden="true"
+            />
+          </button>
+        </div>
       </div>
 
       <footer class="dl-user__foot">
@@ -121,7 +170,7 @@ const chooseTheme = (value: unknown): void => {
           :loading="signingOut"
           @click="emit('signOut')"
         >
-          Sign out
+          {{ t('userMenu.signOut') }}
         </DlButton>
       </footer>
     </VCard>
@@ -269,13 +318,70 @@ const chooseTheme = (value: unknown): void => {
   letter-spacing: 0;
 }
 
+/* Sem linha entre tema e língua: são preferências da mesma família. */
+.dl-user__section--languages {
+  padding-top: 0;
+}
+
+.dl-user__languages {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dl-user__language {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--dl-radius-md, 8px);
+  background: transparent;
+  color: var(--dl-on-surface);
+  font: inherit;
+  font-size: 13px;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background var(--dl-motion-fast, 120ms) var(--dl-easing),
+    border-color var(--dl-motion-fast, 120ms) var(--dl-easing);
+}
+
+.dl-user__language:hover {
+  background: var(--dl-surface-variant);
+}
+
+.dl-user__language:focus-visible {
+  outline: 2px solid var(--dl-primary);
+  outline-offset: 2px;
+}
+
+/* A escolhida não depende só de cor: tem marca de conferido e peso maior. */
+.dl-user__language--active {
+  font-weight: 600;
+  border-color: rgba(var(--v-theme-primary), 0.3);
+  background: rgba(var(--v-theme-primary), 0.08);
+}
+
+.dl-user__language-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dl-user__language-check {
+  color: rgb(var(--v-theme-primary));
+}
+
 .dl-user__foot {
   padding: 8px;
   border-top: 1px solid var(--dl-outline);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dl-user__trigger {
+  .dl-user__trigger,
+  .dl-user__language {
     transition: none;
   }
 }

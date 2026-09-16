@@ -20,6 +20,7 @@
  * rolagem onde estava.
  */
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 const props = withDefaults(
   defineProps<{
@@ -39,10 +40,12 @@ const props = withDefaults(
     detailKey: null,
     breakpoint: 900,
     masterSize: 'minmax(300px, 5fr)',
-    backLabel: 'Back',
+    backLabel: undefined,
     stickyTop: 76,
   },
 );
+
+const { t } = useDotlogText();
 
 const emit = defineEmits<{
   back: [];
@@ -144,7 +147,7 @@ watch(
     <div v-show="!narrow || detailOpen" ref="detail" class="dl-md__detail" tabindex="-1">
       <div v-if="narrow && detailOpen" class="dl-md__back">
         <VBtn prepend-icon="mdi-arrow-left" variant="text" size="small" color="primary" @click="emit('back')">
-          {{ backLabel }}
+          {{ backLabel ?? t('common.back') }}
         </VBtn>
       </div>
 

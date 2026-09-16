@@ -18,6 +18,8 @@
  * Com `prefers-reduced-motion` o brilho some e fica a forma. A informação
  * "está carregando" continua, porque ela está na forma, não na animação.
  */
+import { useDotlogText } from '../i18n/useDotlogText';
+
 withDefaults(
   defineProps<{
     /** Quantos blocos empilhar. */
@@ -38,6 +40,8 @@ withDefaults(
     varied: true,
   },
 );
+
+const { t } = useDotlogText();
 </script>
 
 <template>
@@ -48,7 +52,7 @@ withDefaults(
     aria-live="polite"
     aria-busy="true"
   >
-    <span class="dl-skeleton__sr">Loading</span>
+    <span class="dl-skeleton__sr">{{ t('common.loading') }}</span>
     <span
       v-for="n in lines"
       :key="n"

@@ -40,6 +40,9 @@ jobs:
       # A paleta e contrato: versao que quebra contraste nao sai.
       - run: npm run check:contrast
 
+      # Traducao tambem: lingua com chave faltando ou mensagem que nao compila nao sai.
+      - run: npm run check:locales
+
       # O Storybook tambem precisa compilar. Story quebrada e documentacao mentindo.
       - run: npm run build-storybook
 

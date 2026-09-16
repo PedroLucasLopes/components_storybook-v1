@@ -43,6 +43,7 @@
  */
 import { computed, nextTick, ref, watch } from 'vue';
 import { httpMethodStatus } from '../data/httpMethods';
+import { useDotlogText } from '../i18n/useDotlogText';
 import {
   buildRouteTree,
   countRouteNodes,
@@ -87,13 +88,15 @@ const props = withDefaults(
     selectable: true,
     hideMethods: false,
     loading: false,
-    label: 'Routes',
+    label: undefined,
     methodMap: () => httpMethodStatus,
     openLimit: 40,
-    emptyTitle: 'No routes yet',
-    emptyDescription: 'Routes registered for this application appear here, grouped by path.',
+    emptyTitle: undefined,
+    emptyDescription: undefined,
   },
 );
+
+const { t } = useDotlogText();
 
 /** Chave do nó selecionado, que é o caminho normalizado. */
 const selected = defineModel<string | null>('selected', { default: null });
@@ -212,16 +215,19 @@ const summary = computed(() => {
   const count = filtered.value?.matches.size;
 
   if (count === undefined) return '';
-  if (count === 0) return 'No route matches the filter.';
+  if (count === 0) return t('routeTree.noMatch');
 
-  return `${count} ${count === 1 ? 'path matches' : 'paths match'} the filter.`;
+  return t('routeTree.matches', { count });
 });
 
 const describe = (row: Row): string => {
   const { node } = row;
-  const parts = [node.key, node.group ? 'group' : node.routes.map((route) => route.method.toUpperCase()).join(', ')];
+  const parts = [
+    node.key,
+    node.group ? t('routeTree.groupDescription') : node.routes.map((route) => route.method.toUpperCase()).join(', '),
+  ];
 
-  if (node.descendants > 0) parts.push(`${node.descendants} below`);
+  if (node.descendants > 0) parts.push(t('routeTree.below', { count: node.descendants }));
 
   return [...parts, ...row.warnings].join(', ');
 };
@@ -401,13 +407,13 @@ defineExpose({
       <slot name="empty">
         <div class="dl-rtree__empty">
           <VIcon icon="mdi-sitemap-outline" size="28" class="dl-rtree__empty-icon" />
-          <p class="dl-rtree__empty-title">{{ emptyTitle }}</p>
-          <p class="dl-rtree__empty-text">{{ emptyDescription }}</p>
+          <p class="dl-rtree__empty-title">{{ emptyTitle ?? t('routeTree.emptyTitle') }}</p>
+          <p class="dl-rtree__empty-text">{{ emptyDescription ?? t('routeTree.emptyDescription') }}</p>
         </div>
       </slot>
     </template>
 
-    <p v-else-if="rows.length === 0" class="dl-rtree__nomatch">No route matches the filter.</p>
+    <p v-else-if="rows.length === 0" class="dl-rtree__nomatch">{{ t('routeTree.noMatch') }}</p>
 
     <!-- Fora do abrir e fechar, `css` desligado troca na hora: nem espera o
          próximo quadro, que numa aba em segundo plano não chega. -->
@@ -417,7 +423,7 @@ defineExpose({
       :name="animated ? 'dl-rtree-row' : 'dl-rtree-still'"
       :css="animated"
       role="tree"
-      :aria-label="label"
+      :aria-label="label ?? t('routeTree.label')"
       class="dl-rtree__rows"
     >
       <div
@@ -476,7 +482,7 @@ defineExpose({
         <span class="dl-rtree__content">
           <span class="dl-rtree__main">
             <DlRoutePath :path="row.node.key" :base="row.node.base" :highlight="query" class="dl-rtree__path" />
-            <span v-if="row.node.group" class="dl-rtree__group">Group</span>
+            <span v-if="row.node.group" class="dl-rtree__group">{{ t('routeTree.group') }}</span>
             <span v-else-if="!hideMethods" class="dl-rtree__methods">
               <DlStatusChip
                 v-for="route in row.node.routes"
@@ -503,7 +509,7 @@ defineExpose({
             <span
               v-if="row.node.descendants > 0"
               class="dl-rtree__count"
-              :title="`${row.node.descendants} below`"
+              :title="t('routeTree.below', { count: row.node.descendants })"
               aria-hidden="true"
             >{{ row.node.descendants }}</span>
             <span v-if="$slots['node-end']" class="dl-rtree__end" @click.stop @keydown.stop>

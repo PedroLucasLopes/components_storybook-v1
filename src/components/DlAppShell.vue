@@ -19,6 +19,7 @@
  * usa esta casca passa `with-menu="false"` ao `DlPageHeader`.
  */
 import { useDisplay } from 'vuetify';
+import { useDotlogText } from '../i18n/useDotlogText';
 import DlLoader from './DlLoader.vue';
 import DlNavDrawer, { type NavGroup, type NavItem } from './DlNavDrawer.vue';
 
@@ -49,6 +50,7 @@ const emit = defineEmits<{
 }>();
 
 const { mdAndDown } = useDisplay();
+const { t } = useDotlogText();
 
 const focusContent = (): void => {
   document.getElementById('dl-shell-content')?.focus();
@@ -58,10 +60,10 @@ const focusContent = (): void => {
 <template>
   <VLayout class="dl-shell">
     <a href="#dl-shell-content" class="dl-shell__skip" @click.prevent="focusContent">
-      Skip to content
+      {{ t('shell.skipToContent') }}
     </a>
 
-    <DlLoader :active="loading" variant="bar" message="Loading page" />
+    <DlLoader :active="loading" variant="bar" :message="t('shell.loadingPage')" />
 
     <DlNavDrawer
       :open="open"
@@ -84,7 +86,7 @@ const focusContent = (): void => {
         <VBtn
           v-if="mdAndDown"
           icon="mdi-menu"
-          aria-label="Open menu"
+          :aria-label="t('common.openMenu')"
           variant="text"
           density="comfortable"
           @click="emit('update:open', true)"

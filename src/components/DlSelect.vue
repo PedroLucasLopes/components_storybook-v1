@@ -18,6 +18,7 @@ import { computed } from 'vue';
 // resolve com o Vuetify registrado globalmente, e a aplicação que usa o
 // auto-import do `vite-plugin-vuetify` não registra o que não aparece como tag.
 import { VAutocomplete, VSelect } from 'vuetify/components';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 const props = withDefaults(
   defineProps<{
@@ -55,6 +56,8 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{ 'update:modelValue': [value: unknown] }>();
+
+const { t } = useDotlogText();
 
 const value = computed({
   get: () => props.modelValue,
@@ -96,11 +99,11 @@ const component = computed(() => (withSearch.value ? VAutocomplete : VSelect));
       :density="density"
       :aria-required="required || undefined"
       variant="outlined"
-      no-data-text="No options"
+      :no-data-text="t('select.noOptions')"
       menu-icon="mdi-chevron-down"
     >
       <template v-if="loading" #no-data>
-        <div class="dl-select__loading">Loading options…</div>
+        <div class="dl-select__loading">{{ t('select.loadingOptions') }}</div>
       </template>
       <template v-for="(_, name) in $slots" #[name]="data">
         <slot :name="name" v-bind="data ?? {}" />

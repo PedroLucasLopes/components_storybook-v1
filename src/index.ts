@@ -39,6 +39,18 @@ export {
   type ThemePreferences,
 } from './theme/useTheme';
 
+/* ------------------------------- lingua ------------------------------ */
+
+export { createDotlogLocale } from './i18n/createDotlogLocale';
+export { useLanguages, type Language } from './i18n/useLanguages';
+export {
+  languageName,
+  languageRegion,
+  matchLocale,
+  preferredLocale,
+  LOCALE_STORAGE_KEY,
+} from './i18n/languages';
+
 /* ----------------------------- permissao ----------------------------- */
 
 export {
@@ -71,6 +83,7 @@ export { default as DlDescriptionList } from './components/DlDescriptionList.vue
 export { default as DlSectionCard } from './components/DlSectionCard.vue';
 export { default as DlTabs } from './components/DlTabs.vue';
 export { default as DlUserMenu } from './components/DlUserMenu.vue';
+export { default as DlFlag } from './components/DlFlag.vue';
 export { default as DlAppShell } from './components/DlAppShell.vue';
 export { default as DlSignIn } from './components/DlSignIn.vue';
 export { default as DlSecretDialog } from './components/DlSecretDialog.vue';

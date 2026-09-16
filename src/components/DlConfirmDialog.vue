@@ -14,12 +14,14 @@
  * se mover até lá, e não acertar por reflexo.
  */
 import { computed, ref, watch } from 'vue';
+import { splitAround, useDotlogText } from '../i18n/useDotlogText';
 
 const props = withDefaults(
   defineProps<{
     modelValue: boolean;
     title: string;
     message?: string;
+    /** Sem valor, "Confirmar" na língua corrente. Prefira o verbo da ação. */
     confirmLabel?: string;
     cancelLabel?: string;
     /** Vermelho e ícone de alerta. Ligue para o que apaga ou revoga. */
@@ -34,11 +36,16 @@ const props = withDefaults(
     error?: string | null;
   }>(),
   {
-    confirmLabel: 'Confirm',
-    cancelLabel: 'Cancel',
+    confirmLabel: undefined,
+    cancelLabel: undefined,
     requireText: null,
   },
 );
+
+const { t } = useDotlogText();
+
+/* O texto a digitar vai em `<code>`, no lugar que cada língua der a ele. */
+const gate = computed(() => splitAround((marker) => t('confirm.typeToConfirm', { text: marker })));
 
 const emit = defineEmits<{
   'update:modelValue': [isOpen: boolean];
@@ -93,7 +100,7 @@ const close = (): void => {
 
       <div v-if="requireText" class="dl-confirm__gate">
         <p class="dl-confirm__gate-label">
-          To confirm, type <code>{{ requireText }}</code>
+          {{ gate[0] }}<code>{{ requireText }}</code>{{ gate[1] }}
         </p>
         <VTextField
           v-model="typed"
@@ -107,7 +114,7 @@ const close = (): void => {
 
       <div class="dl-confirm__actions">
         <VBtn variant="text" :disabled="processing" @click="close">
-          {{ cancelLabel }}
+          {{ cancelLabel ?? t('common.cancel') }}
         </VBtn>
         <VBtn
           :color="destructive ? 'error' : 'primary'"
@@ -116,7 +123,7 @@ const close = (): void => {
           variant="flat"
           @click="emit('confirm')"
         >
-          {{ confirmLabel }}
+          {{ confirmLabel ?? t('common.confirm') }}
         </VBtn>
       </div>
     </VCard>

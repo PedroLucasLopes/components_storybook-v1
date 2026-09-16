@@ -20,6 +20,7 @@ import { computed, ref } from 'vue';
 // Import explícito pelo mesmo motivo do `DlSelect`: o componente troca de
 // forma em tempo de execução, e o auto-import da aplicação só vê tag estática.
 import { VTextarea, VTextField } from 'vuetify/components';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 const props = withDefaults(
   defineProps<{
@@ -67,6 +68,8 @@ const emit = defineEmits<{
   'update:modelValue': [value: string | number | null];
   copied: [value: string];
 }>();
+
+const { t } = useDotlogText();
 
 const value = computed({
   get: () => props.modelValue,
@@ -135,7 +138,7 @@ const field = computed(() => (props.rows ? VTextarea : VTextField));
         <VBtn
           v-if="type === 'password'"
           :icon="passwordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
-          :aria-label="passwordVisible ? 'Hide' : 'Show'"
+          :aria-label="passwordVisible ? t('common.hide') : t('common.show')"
           variant="text"
           size="small"
           density="comfortable"
@@ -144,7 +147,7 @@ const field = computed(() => (props.rows ? VTextarea : VTextField));
         <VBtn
           v-if="copyable"
           :icon="justCopied ? 'mdi-check' : 'mdi-content-copy'"
-          :aria-label="justCopied ? 'Copied' : 'Copy'"
+          :aria-label="justCopied ? t('common.copied') : t('common.copy')"
           :color="justCopied ? 'success' : undefined"
           variant="text"
           size="small"

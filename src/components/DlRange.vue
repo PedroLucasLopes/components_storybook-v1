@@ -12,6 +12,7 @@
  * que ela está escrevendo. A troca acontece quando o campo perde o foco.
  */
 import { computed, ref, watch } from 'vue';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 const props = withDefaults(
   defineProps<{
@@ -36,6 +37,8 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{ 'update:modelValue': [valor: [number, number]] }>();
+
+const { t } = useDotlogText();
 
 const range = computed({
   get: () => props.modelValue,
@@ -79,7 +82,7 @@ const display = (value: number): string =>
 
     <div class="dl-range__readout" aria-live="polite">
       <span class="dl-range__value">{{ display(range[0]) }}</span>
-      <span class="dl-range__separator" aria-hidden="true">to</span>
+      <span class="dl-range__separator" aria-hidden="true">{{ t('range.to') }}</span>
       <span class="dl-range__value">{{ display(range[1]) }}</span>
     </div>
 
@@ -106,7 +109,7 @@ const display = (value: number): string =>
         :min="min"
         :max="max"
         :disabled="disabled"
-        label="Min"
+        :label="t('range.min')"
         type="number"
         variant="outlined"
         density="compact"
@@ -120,7 +123,7 @@ const display = (value: number): string =>
         :min="min"
         :max="max"
         :disabled="disabled"
-        label="Max"
+        :label="t('range.max')"
         type="number"
         variant="outlined"
         density="compact"

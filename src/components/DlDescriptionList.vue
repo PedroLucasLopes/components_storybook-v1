@@ -12,6 +12,7 @@
  * não carregou; o travessão diz "não há".
  */
 import { ref } from 'vue';
+import { useDotlogText } from '../i18n/useDotlogText';
 
 export interface DescriptionItem {
   key: string;
@@ -32,6 +33,8 @@ withDefaults(
   }>(),
   { columns: 2 },
 );
+
+const { t } = useDotlogText();
 
 const copiedKey = ref<string | null>(null);
 
@@ -66,8 +69,8 @@ const copy = async (item: DescriptionItem): Promise<void> => {
         <VBtn
           v-if="item.copyable && item.value"
           :icon="copiedKey === item.key ? 'mdi-check' : 'mdi-content-copy'"
-          :aria-label="copiedKey === item.key ? `${item.label} copied` : `Copy ${item.label}`"
-          :title="copiedKey === item.key ? 'Copied' : 'Copy'"
+          :aria-label="copiedKey === item.key ? t('description.copied', { label: item.label }) : t('description.copy', { label: item.label })"
+          :title="copiedKey === item.key ? t('common.copied') : t('common.copy')"
           :color="copiedKey === item.key ? 'success' : undefined"
           variant="text"
           size="x-small"
