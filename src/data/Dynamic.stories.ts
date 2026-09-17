@@ -297,6 +297,7 @@ export const SidebarFromRoutes: Story = {
           active="equipment"
           title="KRLoc"
           subtitle="Equipment rental"
+          logo="mdi-excavator"
         />
         <VMain style="background: var(--dl-background);">
           <div style="padding: 20px;">
@@ -332,8 +333,8 @@ export const SidebarZeroConfig: Story = {
     docs: {
       description: {
         story:
-          'The same routes with nothing configured: neutral icon, alphabetical ' +
-          'order, one group, labels straight from the path. It works, and it is ' +
+          'The same routes with nothing configured: neutral icons, the brand included, ' +
+          'alphabetical order, one group, labels straight from the path. It works, and it is ' +
           'the floor a brand new application starts from. `/health` shows up ' +
           'here, which is exactly the kind of thing a two-line override fixes.',
       },

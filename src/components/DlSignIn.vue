@@ -53,6 +53,8 @@ withDefaults(
     /** Provedor para onde a navegação já começou. */
     pendingProvider?: string | null;
     brand?: string;
+    /** Ícone `mdi-*` ao lado de `brand`. Esta é a tela do IdP: como `brand`, o padrão é o do SSO. */
+    logo?: string;
   }>(),
   {
     application: null,
@@ -60,6 +62,7 @@ withDefaults(
     error: null,
     pendingProvider: null,
     brand: 'SSO',
+    logo: 'mdi-shield-key-outline',
   },
 );
 
@@ -76,7 +79,7 @@ const continueTo = computed(() => splitAround((marker) => t('signIn.continueTo',
     <section class="dl-signin__card" aria-labelledby="dl-signin-title" :aria-busy="state === 'loading'">
       <header class="dl-signin__brand">
         <span class="dl-signin__logo" aria-hidden="true">
-          <VIcon icon="mdi-shield-key-outline" size="24" />
+          <VIcon :icon="logo" size="24" />
         </span>
         <span class="dl-signin__brand-name">{{ brand }}</span>
       </header>

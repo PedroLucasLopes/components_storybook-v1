@@ -31,6 +31,8 @@ withDefaults(
     /** Nome da aplicação. */
     title: string;
     subtitle?: string;
+    /** Marca da aplicação no topo do menu: o ícone da aba do navegador. Ver `DlNavDrawer`. */
+    logo?: string;
     /** Menu aberto no telefone. Use `v-model:open`. */
     open?: boolean;
     /** Trilho só de ícone no desktop. Use `v-model:collapsed`. */
@@ -72,6 +74,7 @@ const focusContent = (): void => {
       :active="active"
       :title="title"
       :subtitle="subtitle"
+      :logo="logo"
       @update:open="emit('update:open', $event)"
       @update:collapsed="emit('update:collapsed', $event)"
       @navigate="emit('navigate', $event)"

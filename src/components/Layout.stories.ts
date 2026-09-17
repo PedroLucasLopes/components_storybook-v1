@@ -118,6 +118,7 @@ const shell = (permissions: Permission[], role: string) => ({
         :active="active"
         title="SSO"
         :subtitle="t('app.subtitle')"
+        logo="mdi-shield-key-outline"
         @navigate="(item) => (active = item.key)"
       >
         <template #top-actions>

@@ -20,6 +20,12 @@
  * largura à tabela. No telefone é gaveta temporária, aberta pelo botão de
  * hambúrguer e fechada ao escolher, porque ela cobre o conteúdo e ninguém quer
  * fechar duas vezes.
+ *
+ * ## A marca é da aplicação
+ *
+ * O ícone do topo chega por `logo`, o mesmo da aba do navegador. Sem ele, o
+ * topo mostra um ícone neutro: um padrão com a marca de uma aplicação vestiria
+ * todas as outras com ela, e foi assim que o KRLoc abriu com o escudo do SSO.
  */
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
@@ -58,8 +64,14 @@ const props = withDefaults(
     /** Nome da aplicação, no topo. */
     title?: string;
     subtitle?: string;
+    /**
+     * Marca da aplicação, ao lado do nome, e a única coisa do topo no trilho
+     * recolhido. Ícone `mdi-*`, o mesmo da aba do navegador; marca que não está
+     * no MDI entra como `svg:` seguido do caminho do desenho.
+     */
+    logo?: string;
   }>(),
-  { open: false, collapsed: false },
+  { open: false, collapsed: false, logo: 'mdi-application-outline' },
 );
 
 const emit = defineEmits<{
@@ -108,7 +120,7 @@ const choose = (item: NavItem): void => {
     @update:model-value="emit('update:open', $event)"
   >
     <header class="dl-nav__brand" :class="{ 'dl-nav__brand--rail': rail }">
-      <VIcon icon="mdi-shield-key-outline" size="22" color="primary" />
+      <VIcon :icon="logo" size="22" color="primary" />
       <div v-if="!rail" class="dl-nav__brand-text">
         <strong class="dl-nav__title">{{ title }}</strong>
         <span v-if="subtitle" class="dl-nav__subtitle">{{ subtitle }}</span>

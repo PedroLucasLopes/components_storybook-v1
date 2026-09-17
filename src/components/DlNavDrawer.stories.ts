@@ -6,9 +6,19 @@ import { providePermissions, type Permission } from '../access/usePermissions';
 
 /**
  * O mesmo componente serve as duas aplicações. O que muda é o manifesto, que
- * vem do backend de cada uma. É por isso que ele não conhece "equipamento" nem
- * "projeto".
+ * vem do backend de cada uma, e a marca, que cada aplicação passa. É por isso
+ * que ele não conhece "equipamento", "projeto" nem o escudo do SSO.
  */
+
+interface Brand {
+  title: string;
+  subtitle: string;
+  /** O mesmo ícone da aba do navegador de cada aplicação. */
+  logo: string;
+}
+
+const krlocBrand: Brand = { title: 'KRLoc', subtitle: 'Equipment rental', logo: 'mdi-excavator' };
+const ssoBrand: Brand = { title: 'SSO', subtitle: 'Admin console', logo: 'mdi-shield-key-outline' };
 
 const krlocMenu: NavGroup[] = [
   {
@@ -109,7 +119,7 @@ const ssoMenu: NavGroup[] = [
   },
 ];
 
-const stage = (groups: NavGroup[], permissions: Permission[], title: string, subtitle: string, prefix: string) => ({
+const stage = (groups: NavGroup[], permissions: Permission[], brand: Brand, prefix: string) => ({
   components: { DlNavDrawer, DlPageHeader },
   setup() {
     providePermissions(ref(permissions), ref(prefix));
@@ -118,7 +128,7 @@ const stage = (groups: NavGroup[], permissions: Permission[], title: string, sub
     const collapsed = ref(false);
     const active = ref(groups[0]?.items[0]?.key ?? '');
 
-    return { groups, open, collapsed, active, title, subtitle };
+    return { groups, open, collapsed, active, ...brand };
   },
   template: `
     <VLayout style="min-height: 520px; border: 1px solid var(--dl-outline); border-radius: 16px; overflow: hidden;">
@@ -129,6 +139,7 @@ const stage = (groups: NavGroup[], permissions: Permission[], title: string, sub
         :active="active"
         :title="title"
         :subtitle="subtitle"
+        :logo="logo"
         @navigate="(item) => (active = item.key)"
       />
       <VMain style="background: var(--dl-background);">
@@ -155,8 +166,9 @@ const meta: Meta<typeof DlNavDrawer> = {
     docs: {
       description: {
         component:
-          'The manifest comes from each application backend. This component only ' +
-          'draws it, and hides whatever the viewer role does not unlock.',
+          'The manifest comes from each application backend, and the brand from the ' +
+          'application itself, the same icon as its browser tab. This component only ' +
+          'draws them, and hides whatever the viewer role does not unlock.',
       },
     },
   },
@@ -179,8 +191,7 @@ export const Krloc: Story = {
         { path: '/lessee', method: 'GET' },
         { path: '/generate/contract/:id', method: 'POST' },
       ],
-      'KRLoc',
-      'Equipment rental',
+      krlocBrand,
       '/api',
     ),
 };
@@ -204,8 +215,7 @@ export const KrlocRestricted: Story = {
         { path: '/equipment', method: 'GET' },
         { path: '/accessory', method: 'GET' },
       ],
-      'KRLoc',
-      'Equipment rental',
+      krlocBrand,
       '/api',
     ),
 };
@@ -216,7 +226,7 @@ export const Sso: Story = {
     docs: {
       description: {
         story:
-          'Another application, another manifest, the same component. This role is ' +
+          'Another application, another manifest and brand, the same component. This role is ' +
           'ADMIN: it reaches the catalogue and the keys, but not Generate key, ' +
           'which in the SSO catalogue is granted to SUPERADMIN only.',
       },
@@ -232,8 +242,7 @@ export const Sso: Story = {
         { path: '/route', method: 'GET' },
         { path: '/clientkey', method: 'GET' },
       ],
-      'SSO',
-      'Admin console',
+      ssoBrand,
       '/sso',
     ),
 };
@@ -249,5 +258,5 @@ export const NoAccess: Story = {
       },
     },
   },
-  render: () => stage(krlocMenu, [], 'KRLoc', 'Equipment rental', '/api'),
+  render: () => stage(krlocMenu, [], krlocBrand, '/api'),
 };

@@ -194,6 +194,12 @@ desliga a barra com `:paged="false"`.
 "equipamento" nem "projeto". É isso que permite o mesmo componente servir as duas aplicações. Grupo
 que ficou sem item some junto com o título: cabeçalho de seção vazia promete algo que não vem.
 
+**A marca vem da aplicação.** `DlAppShell` e `DlNavDrawer` recebem `logo`, o ícone `mdi-*` que a
+aplicação também desenha na aba do navegador; marca fora do MDI entra como `svg:` e o caminho. Sem
+`logo`, o topo mostra um ícone neutro: um padrão com a marca de uma aplicação vestiria todas as outras
+com ela, e foi assim que o KRLoc abriu com o escudo do SSO. `DlSignIn` é a tela do próprio IdP, e lá o
+padrão continua sendo o escudo, como `brand` continua sendo "SSO".
+
 **Tema com três estados.** `light`, `dark` e `system`, e `system` é o padrão, acompanhando o sistema
 operacional em tempo real. Guardar "seguir o sistema" como estado próprio, em vez de resolver na
 hora de salvar, é o que permite continuar acompanhando depois.
@@ -329,7 +335,7 @@ Vieram com o console do SSO e servem a qualquer front do ecossistema.
 | `DlAppShell` | menu lateral, barra superior e conteúdo | largura máxima no conteúdo, link de pular para o conteúdo, barra de carregamento única |
 | `DlUserMenu` | quem entrou, tema, língua e saída | tema em três escolhas; línguas as que a aplicação registrou, com nome e bandeira; sair por último e em vermelho; iniciais, sem foto do provedor |
 | `DlFlag` | bandeira de país | SVG, não emoji; decorativa, com o nome sempre ao lado; país sem desenho vira o código |
-| `DlSignIn` | a tela de login do IdP | só oferece provedor com pedido pendente; diz a aplicação; erro por código, nunca texto da URL |
+| `DlSignIn` | a tela de login do IdP, e a de login recusado de uma aplicação | só oferece provedor com pedido pendente; diz a aplicação; erro por código, nunca texto da URL; a aplicação troca a marca por `brand` e `logo` |
 | `DlSecretDialog` | segredo mostrado uma vez | mascarado por padrão; copiar sem revelar; fechar exige confirmar que guardou |
 | `DlTabs` | abas de tela de detalhe | aba sem permissão some, e a selecionada cai para a primeira visível |
 | `DlSectionCard` · `DlDescriptionList` | ficha de registro | heading de verdade; `<dl>`; copiar ao lado do valor; slot `title` para título com forma própria |
