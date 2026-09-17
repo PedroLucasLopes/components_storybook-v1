@@ -1,8 +1,9 @@
 # @pedrolucaslopes/dotlog-ui
 
 Componentes Vuetify, tokens de design e Storybook dos fronts do ecossistema SSO: tabela de gestão,
-casca com menu derivado das permissões, tela de login do IdP, árvore de rotas, gráficos, avisos e
-modais. Todo componente nasce aqui, com story nos dois temas, e só depois é consumido.
+casca com menu derivado das permissões, tela de login do IdP, árvore de rotas, ciclo de vida de
+registro, campos de dinheiro e de arquivo, gráficos, avisos e modais. Todo componente nasce aqui, com
+story nos dois temas, e só depois é consumido.
 
 As decisões de desenho, a conferência de contraste e as armadilhas já pagas estão em
 [`CLAUDE.md`](CLAUDE.md).

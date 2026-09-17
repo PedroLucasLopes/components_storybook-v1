@@ -12,6 +12,7 @@
  * que a tabela não sabe nada sobre o domínio de nenhuma delas.
  */
 import type { Permission } from '../access/usePermissions';
+import type { LifecycleExit, LifecycleStep } from '../components/DlLifecycle.vue';
 import type { StatusDefinition } from '../components/DlStatusChip.vue';
 
 /* ------------------------- KRLoc: equipamentos ------------------------- */
@@ -49,6 +50,31 @@ export const equipmentStatus: Record<string, StatusDefinition> = {
   RETIRED: { label: 'Retired', tone: 'dark', icon: 'mdi-archive-outline' },
   STOLEN: { label: 'Stolen', tone: 'error', icon: 'mdi-alert-outline' },
 };
+
+/* -------------------------- KRLoc: contratos --------------------------- */
+
+/** O caminho de um contrato, na ordem em que ele acontece. */
+export const contractSteps: LifecycleStep[] = [
+  { key: 'PENDING', label: 'Pending', icon: 'mdi-file-document-edit-outline' },
+  { key: 'ACTIVE', label: 'Active', icon: 'mdi-truck-delivery-outline' },
+  { key: 'COMPLETED', label: 'Completed', icon: 'mdi-flag-checkered' },
+];
+
+/** Cancelar é desvio, não etapa: só acontece antes de o contrato começar. */
+export const contractExits: LifecycleExit[] = [
+  { key: 'CANCELLED', label: 'Cancelled', icon: 'mdi-cancel', tone: 'dark' },
+];
+
+/**
+ * Planilha de importação de equipamentos, com o cabeçalho que `POST
+ * /equipment/upload` lê. Serve de conteúdo para o arquivo escolhido nas stories.
+ */
+export const equipmentCsv = [
+  'name,code,p_diary,p_weekly,p_biweekly,p_monthly,p_indemnity,status',
+  '400L concrete mixer,KRBET,85,480,850,1500,9800,AVAILABLE',
+  'Tubular scaffold 1.5m,KRAND,12,70,120,210,640,AVAILABLE',
+  '20kg demolition hammer,KRMAR,140,790,1400,2500,7200,MAINTENANCE',
+].join('\n');
 
 /* ---------------------------- SSO: projetos ---------------------------- */
 

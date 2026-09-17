@@ -102,5 +102,28 @@
   "data": {
     "yes": "Sim",
     "no": "Não"
+  },
+  "fileDrop": {
+    "prompt": "Arraste um arquivo para cá ou {browse}",
+    "browse": "escolha um",
+    "dropNow": "Solte para escolher este arquivo",
+    "accepts": "Aceita {types}",
+    "upTo": "até {size}",
+    "remove": "Remover {name}",
+    "selected": "Arquivo escolhido: {name}",
+    "oneFile": "Escolha um arquivo por vez.",
+    "wrongType": "{name} não é um arquivo aceito. Use {types}.",
+    "tooLarge": "{name} passa de {size}."
+  },
+  "lifecycle": {
+    "label": "Ciclo de vida",
+    "done": "{step}: concluída",
+    "current": "{step}: etapa atual",
+    "pending": "{step}: ainda não alcançada",
+    "skipped": "{step}: pulada",
+    "exit": "{step}: encerrado aqui"
+  },
+  "money": {
+    "invalid": "Digite um valor como {example}."
   }
 }

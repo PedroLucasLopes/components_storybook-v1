@@ -65,12 +65,15 @@ export {
 /* ---------------------------- componentes ---------------------------- */
 
 export { default as DlTextField } from './components/DlTextField.vue';
+export { default as DlMoneyField } from './components/DlMoneyField.vue';
 export { default as DlSelect } from './components/DlSelect.vue';
 export { default as DlRange } from './components/DlRange.vue';
+export { default as DlFileDrop } from './components/DlFileDrop.vue';
 export { default as DlDataTable } from './components/DlDataTable.vue';
 export { default as DlNavDrawer } from './components/DlNavDrawer.vue';
 export { default as DlPageHeader } from './components/DlPageHeader.vue';
 export { default as DlStatusChip } from './components/DlStatusChip.vue';
+export { default as DlLifecycle } from './components/DlLifecycle.vue';
 export { default as DlExpansion } from './components/DlExpansion.vue';
 export { default as DlConfirmDialog } from './components/DlConfirmDialog.vue';
 export { default as DlFormDialog } from './components/DlFormDialog.vue';
@@ -139,6 +142,8 @@ export type { Column, RowAction } from './components/DlDataTable.vue';
 export type { NavGroup, NavItem } from './components/DlNavDrawer.vue';
 export type { HeaderAction } from './components/DlPageHeader.vue';
 export type { StatusDefinition, StatusTone } from './components/DlStatusChip.vue';
+export type { LifecycleExit, LifecycleStep } from './components/DlLifecycle.vue';
+export type { FileRejection } from './components/DlFileDrop.vue';
 export type { DescriptionItem } from './components/DlDescriptionList.vue';
 export type { TabItem } from './components/DlTabs.vue';
 export type { SignInError, SignInProvider } from './components/DlSignIn.vue';

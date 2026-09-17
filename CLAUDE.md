@@ -18,7 +18,8 @@ npm run build            # o pacote: dist/index.js, dist/style.css e as declara�
 
 > Projeto **independente**: repositório, `node_modules` e ciclo de versão próprios. Nesta máquina ele
 > mora em `ui/`, com `.git` próprio, como o `sso-client`; o diretório de fora não é repositório. Quem
-> consome é o console do SSO, `plataforma_sso-v1`, do mesmo jeito que qualquer front novo consumiria.
+> consome são o console do SSO, `plataforma_sso-v1`, e o front do KRLoc, `plataforma_krloc-v1`, do mesmo
+> jeito que qualquer front novo consumiria.
 
 ---
 
@@ -337,6 +338,30 @@ Vieram com o console do SSO e servem a qualquer front do ecossistema.
 | `DlRoutePath` | um caminho de rota | trecho herdado do pai apagado; parâmetro com cor própria; busca marcada mesmo atravessando `/` |
 | `DlMasterDetail` | lista e detalhe na mesma tela | lado a lado com largura, um de cada vez sem; decide pela largura do componente, não da janela |
 
+### Formulário e fluxo
+
+Vieram com o front do KRLoc, e também não conhecem domínio nenhum.
+
+| Componente | Para quê | Decisão que vale lembrar |
+|---|---|---|
+| `DlFileDrop` | um arquivo para enviar, como planilha de importação | arrastar e procurar na mesma frase; tipo e tamanho conferidos antes do envio; extensão vale tanto quanto o MIME; um arquivo por vez; erro do servidor vence |
+| `DlMoneyField` | valor em dinheiro | separadores da língua da tela, moeda do negócio (`currency` obrigatório); formata ao sair do campo; sai número ou `null` |
+| `DlLifecycle` | onde um registro está no ciclo de vida | `<ol>` com `aria-current="step"`; saída não é etapa, e o que ela pulou fica tracejado; vira coluna pela largura do próprio componente |
+
+**`DlFileDrop` por dentro.** O `<input type="file">` fica escondido e só abre a janela do sistema; o
+foco é do botão dentro da frase, que volta a receber o foco quando o arquivo é removido. `dragenter` e
+`dragleave` disparam também nos filhos da área, então o destaque conta entradas e saídas. O `dragover`
+sempre chama `preventDefault`, mesmo travado: sem isso o navegador abre o arquivo solto e a tela se
+perde.
+
+**`DlMoneyField` por dentro.** Os separadores, o símbolo e as casas saem de `formatToParts` na língua
+corrente. Sem o separador decimal da língua no texto, o outro sinal seguido de uma ou duas casas no fim
+é decimal ("12.50" colado numa tela em português); com três casas, é milhar. Um `type="number"` perderia
+o valor de quem digita vírgula.
+
+⚠️ **`DlLifecycle` usa container query.** A regra `@container` só alcança os descendentes do container,
+então o `container-type` fica numa `<div>` em volta da `<ol>`: na própria lista ele não faria nada.
+
 `permits(permissions, method, path)` é a mesma pergunta de `usePermissions().can`, para guard de rota
 e store, que rodam fora de componente. `httpMethodStatus` dá a pastilha de método HTTP.
 `DlConfirmDialog` aceita `error`, pela mesma regra do formulário: falha aparece dentro do modal.
@@ -469,3 +494,4 @@ src/
 - Toda animação tem contrapartida em `prefers-reduced-motion`. O estado fica, o movimento sai.
 - Tela nova não declara coluna nem item de menu à mão. Deriva, e conserta por `overrides` só o que
   o palpite errar.
+- Dinheiro entra por `DlMoneyField`, nunca por `type="number"`, que só entende ponto decimal.
