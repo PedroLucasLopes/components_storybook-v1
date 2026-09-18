@@ -176,6 +176,11 @@ comunica "você poderia, mas não agora", que é mentira quando o papel dela sim
 aquilo. Desabilitado fica reservado para bloqueio temporário: registro em outro estado, formulário
 incompleto, operação em andamento. Ver `DlDataTable` e `DlPageHeader`.
 
+**Uma ação principal por linha.** `RowAction.primary` tira a ação do meio dos ícones apagados e a
+transforma em botão redondo preenchido, na cor de `color` ou na `primary`. É para a ação que dá razão
+à linha existir — registrar a volta do equipamento, na tela do contrato. Vale para **uma**: se tudo se
+destaca, nada se destaca, e a tabela volta a ser uma fileira de ícones iguais.
+
 **A tabela não conhece domínio nenhum.** `columns`, `rows` e `actions` chegam por prop. O KRLoc passa
 código, equipamento e diária; o SSO passa projeto, clientId e usuários; a próxima aplicação passa o
 que for dela. A célula sai de `column.key`, de `column.format`, ou do slot `col-<key>` quando precisa

@@ -57,6 +57,14 @@ export interface RowAction<Row> {
   method: string;
   path: string;
   color?: string;
+  /**
+   * A ação principal da linha: vira botão redondo preenchido, na cor de `color`
+   * ou na `primary`, enquanto as outras seguem discretas.
+   *
+   * Um ícone apagado no meio de outros não diz qual é a ação que se espera da
+   * linha. Use em **uma** por linha: se tudo se destaca, nada se destaca.
+   */
+  primary?: boolean;
   /** Desabilita por ESTADO do registro, não por permissão. Ver a nota abaixo. */
   unavailable?: (row: Row) => boolean;
 }
@@ -164,9 +172,9 @@ const hasPrevious = computed(() => props.page > 1);
             v-for="action in visibleActions"
             :key="action.key"
             :prepend-icon="action.icon"
-            :color="action.color"
+            :color="action.color ?? (action.primary ? 'primary' : undefined)"
+            :variant="action.primary ? 'flat' : 'text'"
             :disabled="action.unavailable?.(row)"
-            variant="text"
             size="small"
             @click.stop="emit('action', action.key, row)"
           >
@@ -213,15 +221,19 @@ const hasPrevious = computed(() => props.page > 1);
 
             <td v-if="visibleActions.length" class="dl-table__actions">
               <div class="dl-table__actions-inner">
+                <!-- `rounded: md` é o padrão de botão desta biblioteca, e ele vence
+                     o círculo que o Vuetify dá ao botão de ícone. A ação principal
+                     pede o círculo de volta: é ele que a separa dos vizinhos. -->
                 <VBtn
                   v-for="action in visibleActions"
                   :key="action.key"
                   :icon="action.icon"
-                  :color="action.color"
+                  :color="action.color ?? (action.primary ? 'primary' : undefined)"
+                  :variant="action.primary ? 'flat' : 'text'"
+                  :rounded="action.primary ? 'circle' : undefined"
                   :aria-label="action.label"
                   :title="action.label"
                   :disabled="action.unavailable?.(row)"
-                  variant="text"
                   size="small"
                   density="comfortable"
                   @click.stop="emit('action', action.key, row)"
@@ -356,6 +368,14 @@ const hasPrevious = computed(() => props.page > 1);
   display: flex;
   gap: 2px;
   justify-content: flex-end;
+}
+
+/* Botão de ícone quadrado, que é o que faz o redondo sair redondo: a altura vem
+   da densidade e a largura, do tamanho, e sem isto a ação principal virava uma
+   elipse. Vale para todas: área de toque igual para o dedo. */
+.dl-table__actions-inner :deep(.v-btn--icon) {
+  width: auto;
+  aspect-ratio: 1;
 }
 
 .dl-table__cards {

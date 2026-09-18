@@ -46,6 +46,26 @@ const equipmentActions: RowAction<MockEquipment>[] = [
   },
 ];
 
+/**
+ * A mesma tabela com uma ação principal. Aqui a linha existe para registrar a
+ * volta do equipamento, e é isso que o botão redondo diz; abrir e editar
+ * continuam discretos.
+ */
+const equipmentReturnActions: RowAction<MockEquipment>[] = [
+  {
+    key: 'return',
+    label: 'Register return',
+    icon: 'mdi-truck-check-outline',
+    method: 'PUT',
+    path: '/equipment/:id',
+    primary: true,
+    // Só o que está na obra volta. Desabilitado por ESTADO, como o retire.
+    unavailable: (row) => row.status !== 'LEASED',
+  },
+  { key: 'open', label: 'Open', icon: 'mdi-open-in-new', method: 'GET', path: '/equipment/:id' },
+  { key: 'edit', label: 'Edit', icon: 'mdi-pencil-outline', method: 'PUT', path: '/equipment/:id' },
+];
+
 /* -------------------------- colunas do SSO --------------------------- */
 
 const projectColumns: Column<MockProject>[] = [
@@ -92,7 +112,10 @@ const FULL_PROJECT: Permission[] = [
  * O `as never` no slot é a fronteira onde o genérico da tabela encontra o mapa
  * de situação, que é um `Record` solto. Fora daqui, tudo continua tipado.
  */
-const equipmentStage = (permissions: Permission[]) => ({
+const equipmentStage = (
+  permissions: Permission[],
+  actions: RowAction<MockEquipment>[] = equipmentActions,
+) => ({
   components: { DlDataTable, DlStatusChip },
   setup() {
     providePermissions(ref(permissions), ref('/api'));
@@ -105,7 +128,7 @@ const equipmentStage = (permissions: Permission[]) => ({
         {
           columns: equipmentColumns,
           rows: equipment,
-          actions: equipmentActions,
+          actions,
           page: page.value,
           'onUpdate:page': (value: number) => (page.value = value),
         },
@@ -194,6 +217,22 @@ export const ProjectsSso: Story = {
     },
   },
   render: () => projectStage(FULL_PROJECT),
+};
+
+export const PrimaryAction: Story = {
+  name: 'Primary action in the row',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'One action per row can be the primary one, and it becomes a filled ' +
+          'round button while the others stay quiet. A dim icon among dim icons ' +
+          'does not say what the row is for. Disabled by state still applies: it ' +
+          'only lights up for what is actually out on a job site.',
+      },
+    },
+  },
+  render: () => equipmentStage(FULL_EQUIPMENT, equipmentReturnActions),
 };
 
 export const ReadOnly: Story = {
