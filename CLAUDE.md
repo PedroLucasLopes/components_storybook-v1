@@ -61,6 +61,14 @@ o dono no GitHub, em minúsculas.
 **Versão.** Correção é `patch`; prop, evento ou export novo é `minor`; mudar ou remover o que já existe
 é `major`. O front fixa a faixa no `package.json` e sobe quando quiser, que é o ponto de ser pacote.
 
+### CI
+
+`.github/workflows/ci.yml` roda em pull request e push na `main`: `npm ci`, `npm audit` (produção sem
+aviso nenhum; o resto, sem alto), type-check, traduções, contraste da paleta, build, Storybook e
+`npm pack --dry-run`. O `publish.yml` repete auditoria, contraste, traduções e Storybook antes de
+publicar. As actions dos dois são fixadas por commit, cada job pede só a permissão que usa, e o
+Dependabot (`.github/dependabot.yml`) abre pull request para as actions e o npm toda semana.
+
 ---
 
 ## 🎨 A paleta foi conferida, não escolhida
