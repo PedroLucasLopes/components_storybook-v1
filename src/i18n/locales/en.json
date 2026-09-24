@@ -68,7 +68,8 @@
     "continueTo": "to continue to {application}",
     "continue": "to continue",
     "continueWith": "Continue with {provider}",
-    "footer": "Your password stays with your identity provider. Applications only receive who you are and what you can access."
+    "footer": "Your password stays with your identity provider. Applications only receive who you are and what you can access.",
+    "or": "or"
   },
   "routeTree": {
     "label": "Routes",
