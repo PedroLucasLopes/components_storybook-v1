@@ -68,7 +68,8 @@
     "continueTo": "para continuar en {application}",
     "continue": "para continuar",
     "continueWith": "Continuar con {provider}",
-    "footer": "Tu contraseña se queda con tu proveedor de identidad. Las aplicaciones solo reciben quién eres y a qué puedes acceder."
+    "footer": "Tu contraseña se queda con tu proveedor de identidad. Las aplicaciones solo reciben quién eres y a qué puedes acceder.",
+    "or": "o"
   },
   "routeTree": {
     "label": "Rutas",
