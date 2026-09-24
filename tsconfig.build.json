@@ -1,0 +1,14 @@
+{
+  // Só as declarações de tipo do pacote. O JavaScript sai do `vite.lib.config.ts`.
+  // Stories e mocks ficam de fora: são do Storybook, não do contrato.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue"],
+  "exclude": ["src/**/*.stories.ts", "src/mocks/**"]
+}

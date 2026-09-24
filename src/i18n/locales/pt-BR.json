@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Carregando",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "close": "Fechar",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "show": "Mostrar",
+    "hide": "Ocultar",
+    "back": "Voltar",
+    "dismiss": "Fechar aviso",
+    "openMenu": "Abrir menu"
+  },
+  "userMenu": {
+    "accountMenu": "Menu da conta de {name}",
+    "theme": "Tema",
+    "themeLight": "Claro",
+    "themeDark": "Escuro",
+    "themeSystem": "Sistema",
+    "language": "Idioma",
+    "signOut": "Sair"
+  },
+  "shell": {
+    "skipToContent": "Pular para o conteúdo",
+    "loadingPage": "Carregando a página"
+  },
+  "nav": {
+    "main": "Navegação principal",
+    "empty": "Seu papel não libera nenhuma área desta aplicação.",
+    "expand": "Expandir menu",
+    "collapse": "Recolher menu"
+  },
+  "header": {
+    "breadcrumb": "Trilha de navegação"
+  },
+  "table": {
+    "emptyTitle": "Nada por aqui",
+    "emptyDescription": "Nenhum registro corresponde ao que foi pedido.",
+    "actions": "Ações",
+    "pagination": "Paginação",
+    "page": "Página {page}",
+    "previous": "Anterior",
+    "next": "Próxima"
+  },
+  "confirm": {
+    "typeToConfirm": "Para confirmar, digite {text}"
+  },
+  "form": {
+    "create": "Criar",
+    "saveChanges": "Salvar alterações",
+    "discardTitle": "Descartar as alterações?",
+    "discardText": "O que você digitou não foi salvo e será perdido.",
+    "keepEditing": "Continuar editando",
+    "discard": "Descartar"
+  },
+  "secret": {
+    "label": "Segredo",
+    "acknowledge": "Guardei em um lugar seguro",
+    "reveal": "Revelar",
+    "done": "Concluir"
+  },
+  "signIn": {
+    "loading": "Carregando o login",
+    "blockedTitle": "Abra a aplicação para entrar",
+    "blockedText": "O login começa na aplicação que você quer usar. Abra-a de novo e ela trará você de volta para cá.",
+    "title": "Entrar",
+    "continueTo": "para continuar em {application}",
+    "continue": "para continuar",
+    "continueWith": "Continuar com {provider}",
+    "footer": "Sua senha fica com o seu provedor de identidade. As aplicações só recebem quem você é e o que você pode acessar."
+  },
+  "routeTree": {
+    "label": "Rotas",
+    "emptyTitle": "Nenhuma rota ainda",
+    "emptyDescription": "As rotas cadastradas para esta aplicação aparecem aqui, agrupadas por caminho.",
+    "noMatch": "Nenhuma rota corresponde ao filtro.",
+    "matches": "{count} caminho corresponde ao filtro. | {count} caminhos correspondem ao filtro.",
+    "group": "Grupo",
+    "groupDescription": "grupo",
+    "below": "{count} abaixo"
+  },
+  "chart": {
+    "showChart": "Mostrar gráfico",
+    "showTable": "Mostrar tabela de dados",
+    "empty": "Sem dados para o período selecionado.",
+    "total": "Total"
+  },
+  "description": {
+    "copy": "Copiar {label}",
+    "copied": "Copiado: {label}"
+  },
+  "select": {
+    "noOptions": "Nenhuma opção",
+    "loadingOptions": "Carregando opções…"
+  },
+  "range": {
+    "to": "a",
+    "min": "Mín.",
+    "max": "Máx."
+  },
+  "data": {
+    "yes": "Sim",
+    "no": "Não"
+  },
+  "fileDrop": {
+    "prompt": "Arraste um arquivo para cá ou {browse}",
+    "browse": "escolha um",
+    "dropNow": "Solte para escolher este arquivo",
+    "accepts": "Aceita {types}",
+    "upTo": "até {size}",
+    "remove": "Remover {name}",
+    "selected": "Arquivo escolhido: {name}",
+    "oneFile": "Escolha um arquivo por vez.",
+    "wrongType": "{name} não é um arquivo aceito. Use {types}.",
+    "tooLarge": "{name} passa de {size}."
+  },
+  "lifecycle": {
+    "label": "Ciclo de vida",
+    "done": "{step}: concluída",
+    "current": "{step}: etapa atual",
+    "pending": "{step}: ainda não alcançada",
+    "skipped": "{step}: pulada",
+    "exit": "{step}: encerrado aqui"
+  },
+  "money": {
+    "invalid": "Digite um valor como {example}."
+  }
+}

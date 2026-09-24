@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Loading",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied",
+    "show": "Show",
+    "hide": "Hide",
+    "back": "Back",
+    "dismiss": "Dismiss",
+    "openMenu": "Open menu"
+  },
+  "userMenu": {
+    "accountMenu": "Account menu for {name}",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "language": "Language",
+    "signOut": "Sign out"
+  },
+  "shell": {
+    "skipToContent": "Skip to content",
+    "loadingPage": "Loading page"
+  },
+  "nav": {
+    "main": "Main navigation",
+    "empty": "Your role does not unlock any area of this application.",
+    "expand": "Expand menu",
+    "collapse": "Collapse menu"
+  },
+  "header": {
+    "breadcrumb": "Breadcrumb"
+  },
+  "table": {
+    "emptyTitle": "Nothing here",
+    "emptyDescription": "No record matches what was requested.",
+    "actions": "Actions",
+    "pagination": "Pagination",
+    "page": "Page {page}",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "confirm": {
+    "typeToConfirm": "To confirm, type {text}"
+  },
+  "form": {
+    "create": "Create",
+    "saveChanges": "Save changes",
+    "discardTitle": "Discard changes?",
+    "discardText": "What you typed has not been saved and will be lost.",
+    "keepEditing": "Keep editing",
+    "discard": "Discard"
+  },
+  "secret": {
+    "label": "Secret",
+    "acknowledge": "I stored this in a safe place",
+    "reveal": "Reveal",
+    "done": "Done"
+  },
+  "signIn": {
+    "loading": "Loading sign-in",
+    "blockedTitle": "Open the application to sign in",
+    "blockedText": "Sign-in starts in the application you want to use. Open it again and it will bring you back here.",
+    "title": "Sign in",
+    "continueTo": "to continue to {application}",
+    "continue": "to continue",
+    "continueWith": "Continue with {provider}",
+    "footer": "Your password stays with your identity provider. Applications only receive who you are and what you can access."
+  },
+  "routeTree": {
+    "label": "Routes",
+    "emptyTitle": "No routes yet",
+    "emptyDescription": "Routes registered for this application appear here, grouped by path.",
+    "noMatch": "No route matches the filter.",
+    "matches": "{count} path matches the filter. | {count} paths match the filter.",
+    "group": "Group",
+    "groupDescription": "group",
+    "below": "{count} below"
+  },
+  "chart": {
+    "showChart": "Show chart",
+    "showTable": "Show data table",
+    "empty": "No data for the selected period.",
+    "total": "Total"
+  },
+  "description": {
+    "copy": "Copy {label}",
+    "copied": "{label} copied"
+  },
+  "select": {
+    "noOptions": "No options",
+    "loadingOptions": "Loading options…"
+  },
+  "range": {
+    "to": "to",
+    "min": "Min",
+    "max": "Max"
+  },
+  "data": {
+    "yes": "Yes",
+    "no": "No"
+  },
+  "fileDrop": {
+    "prompt": "Drag a file here or {browse}",
+    "browse": "choose one",
+    "dropNow": "Drop to choose this file",
+    "accepts": "Accepts {types}",
+    "upTo": "up to {size}",
+    "remove": "Remove {name}",
+    "selected": "Selected file: {name}",
+    "oneFile": "Choose one file at a time.",
+    "wrongType": "{name} is not an accepted file. Use {types}.",
+    "tooLarge": "{name} is larger than {size}."
+  },
+  "lifecycle": {
+    "label": "Lifecycle",
+    "done": "{step}: done",
+    "current": "{step}: current step",
+    "pending": "{step}: not reached yet",
+    "skipped": "{step}: skipped",
+    "exit": "{step}: ended here"
+  },
+  "money": {
+    "invalid": "Enter an amount such as {example}."
+  }
+}

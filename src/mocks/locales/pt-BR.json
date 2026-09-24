@@ -1,0 +1,35 @@
+{
+  "app": {
+    "subtitle": "Console de administração"
+  },
+  "nav": {
+    "overview": "Visão geral",
+    "catalogue": "Catálogo",
+    "credentials": "Credenciais",
+    "projects": "Projetos",
+    "users": "Usuários",
+    "clientKeys": "Chaves de cliente"
+  },
+  "projects": {
+    "title": "Projetos",
+    "description": "Aplicações conectadas ao SSO.",
+    "new": "Novo projeto",
+    "total": "Projetos",
+    "active": "Ativos",
+    "pending": "Pendentes",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "columns": {
+      "project": "Projeto",
+      "status": "Situação",
+      "clientId": "Client ID",
+      "members": "Membros"
+    }
+  },
+  "status": {
+    "ACTIVE": "Ativo",
+    "PENDING": "Pendente",
+    "SUSPENDED": "Suspenso",
+    "ARCHIVED": "Arquivado"
+  }
+}

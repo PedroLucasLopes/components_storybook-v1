@@ -1,0 +1,35 @@
+{
+  "app": {
+    "subtitle": "Admin console"
+  },
+  "nav": {
+    "overview": "Overview",
+    "catalogue": "Catalogue",
+    "credentials": "Credentials",
+    "projects": "Projects",
+    "users": "Users",
+    "clientKeys": "Client keys"
+  },
+  "projects": {
+    "title": "Projects",
+    "description": "Applications connected to the SSO.",
+    "new": "New project",
+    "total": "Projects",
+    "active": "Active",
+    "pending": "Pending",
+    "edit": "Edit",
+    "delete": "Delete",
+    "columns": {
+      "project": "Project",
+      "status": "Status",
+      "clientId": "Client ID",
+      "members": "Members"
+    }
+  },
+  "status": {
+    "ACTIVE": "Active",
+    "PENDING": "Pending",
+    "SUSPENDED": "Suspended",
+    "ARCHIVED": "Archived"
+  }
+}
