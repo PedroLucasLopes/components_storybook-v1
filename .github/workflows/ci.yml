@@ -1,7 +1,11 @@
 # Integracao continua do components_storybook-v1: auditoria das dependencias,
 # tipos, traducoes, contraste da paleta, a biblioteca e o Storybook, em pull
-# request e em push na main. A entrega e o `publish.yml`, que publica no GitHub
-# Packages quando chega uma tag v*.
+# request e em push na main e na development. A entrega e o `publish.yml`, que
+# publica no GitHub Packages quando chega uma tag v*.
+#
+# O trabalho nasce numa branch feat/*, fix/* ou bugfix/*, vai por pull request
+# para a development e so chega na main por um segundo pull request, revisado a
+# mao. Publicar o pacote continua sendo coisa de tag v*, que so nasce na main.
 #
 # O pipeline tambem e superficie de ataque: cada action e fixada por commit, e
 # nao por tag, que pode ser movida; o token tem so leitura; e o checkout nao
@@ -10,9 +14,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, development]
   pull_request:
-    branches: [main]
+    branches: [main, development]
   workflow_dispatch:
 
 permissions: {}

@@ -29,6 +29,9 @@ O pacote é **`@pedrolucaslopes/dotlog-ui`**, privado, no GitHub Packages, publi
 `components_storybook-v1`. O nome do repositório não precisa bater com o do pacote; o **escopo** do npm precisa ser
 o dono no GitHub, em minúsculas.
 
+- **Branch:** o trabalho nasce em `feat/*`, `fix/*` ou `bugfix/*`, vai por pull request para a
+  `development` e só chega na `main` por um segundo pull request, revisado à mão. A tag de publicação
+  sai da `main`, nunca da `development`.
 - **Publicar:** `npm version patch` e `git push --follow-tags`. A tag `v*` dispara
   `.github/workflows/publish.yml`, que confere a tag contra a versão, roda `check:contrast` e
   `build-storybook`, e publica com o `GITHUB_TOKEN` da própria execução. O `prepublishOnly` confere os
