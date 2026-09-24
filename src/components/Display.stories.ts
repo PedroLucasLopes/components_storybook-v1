@@ -19,10 +19,6 @@ import DlStatCard from './DlStatCard.vue';
 import DlStatusChip from './DlStatusChip.vue';
 import DlTabs, { type TabItem } from './DlTabs.vue';
 
-/**
- * Peças de leitura das telas de detalhe e de painel. Nenhuma conhece o
- * domínio: o conteúdo chega por prop, como na tabela.
- */
 const meta: Meta = {
   title: 'Data/Display',
   parameters: {
@@ -218,8 +214,6 @@ const tabsStage = (permissions: Permission[]) => ({
   setup() {
     providePermissions(ref(permissions), ref('/sso'));
 
-    // Começa na aba de chaves: com o papel de leitura ela some, e a primeira
-    // aba visível assume.
     const current = ref('keys');
 
     return { current, projectTabs };

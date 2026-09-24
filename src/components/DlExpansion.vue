@@ -1,18 +1,6 @@
 <script setup lang="ts">
-/**
- * Painel expansivel, para detalhe que nem todo mundo precisa ver sempre:
- * endereco completo, historico, metadados de auditoria.
- *
- * **Um aberto por vez e o padrao.** Varios open ao mesmo tempo fazem o
- * conteudo abaixo saltar a cada clique, e a pessoa perde o lugar. Quem precisa
- * do contrario liga `multiple`.
- *
- * **Resumo continua visivel quando fechado.** Titulo sozinho obriga a abrir
- * para descobrir se era ali. O `summary` e o que permite varrer sem clicar.
- */
 const props = withDefaults(
   defineProps<{
-    /** Chaves dos panels open. Use `v-model:open`. */
     open?: string[];
     panels: { key: string; title: string; summary?: string; icon?: string }[];
     multiple?: boolean;
@@ -88,7 +76,6 @@ const toggle = (value: unknown): void => {
   flex-shrink: 0;
 }
 
-/* O summary cede espaco antes do title quando falta largura. */
 .dl-expansion__summary {
   font-size: 13px;
   color: var(--dl-on-surface-muted);

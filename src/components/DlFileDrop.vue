@@ -1,50 +1,20 @@
 <script setup lang="ts">
-/**
- * Escolha de um arquivo para enviar: arrastar e soltar, ou procurar.
- *
- * **Os dois caminhos, sempre.** Arrastar é rápido para quem está com a pasta
- * aberta e impossível para quem usa teclado, leitor de tela ou telefone. O
- * botão de procurar fica dentro da área, na mesma frase, e é ele que recebe o
- * foco: o `<input type="file">` fica escondido e só abre a janela do sistema.
- *
- * **Tipo e tamanho conferidos antes do envio.** O servidor recusa do mesmo
- * jeito, mas depois de a pessoa esperar o upload. Aqui a recusa é imediata,
- * diz o nome do arquivo e o limite, e o arquivo escolhido antes continua lá.
- *
- * **A extensão vale tanto quanto o tipo MIME.** No Windows um `.csv` costuma
- * chegar como `application/vnd.ms-excel`; conferir só o MIME recusaria o
- * arquivo certo.
- *
- * **Um arquivo por vez.** Soltar vários não escolhe um deles em silêncio: a
- * pessoa recebe a mensagem e decide qual enviar.
- *
- * **Falha do servidor entra por `error`** e vence a conferência daqui, pela
- * mesma regra do formulário: aparece ao lado do que causou o problema.
- */
 import { computed, nextTick, ref, useId } from 'vue';
 import { useLocale } from 'vuetify';
 import { splitAround, useDotlogText } from '../i18n/useDotlogText';
 
-/** Por que um arquivo não foi aceito. */
 export type FileRejection = 'type' | 'size' | 'count';
 
 const props = withDefaults(
   defineProps<{
-    /** O arquivo escolhido. */
     modelValue?: File | null;
     label?: string;
-    /** Texto de apoio, abaixo da área. Some quando há erro. */
     hint?: string;
-    /** Tipos aceitos, no formato do atributo `accept`: `.csv,text/csv`. */
     accept?: string;
-    /** Tamanho máximo, em bytes. */
     maxSize?: number;
-    /** Falha vinda de fora, como a resposta do servidor. Vence a daqui. */
     error?: string | null;
     required?: boolean;
-    /** Trava a escolha, como durante o envio. */
     disabled?: boolean;
-    /** Ícone da área vazia, no formato `mdi-*`. */
     icon?: string;
   }>(),
   {
@@ -72,8 +42,6 @@ const messageId = useId();
 const input = ref<HTMLInputElement | null>(null);
 const browseButton = ref<HTMLButtonElement | null>(null);
 
-/* `dragenter` e `dragleave` disparam também ao passar pelos filhos da área.
-   Contar entradas e saídas é o que evita o destaque piscar no meio do arraste. */
 const depth = ref(0);
 const dragging = computed(() => depth.value > 0 && !props.disabled);
 
@@ -100,7 +68,6 @@ const accepts = (file: File): boolean => {
   });
 };
 
-/** `.csv,text/csv` vira "CSV". A extensão é o que a pessoa reconhece; o MIME só entra sem ela. */
 const typesLabel = computed(() => {
   const extensions = tokens.value.filter((token) => token.startsWith('.'));
   const names = extensions.length
@@ -112,7 +79,6 @@ const typesLabel = computed(() => {
 
 const UNITS = ['byte', 'kilobyte', 'megabyte', 'gigabyte'] as const;
 
-/** Tamanho na língua da tela: "2 MB", "1,5 MB". */
 const formatSize = (bytes: number): string => {
   let value = bytes;
   let unit = 0;
@@ -139,10 +105,8 @@ const constraints = computed(() =>
     .join(' · '),
 );
 
-/* A frase é traduzida inteira, e o botão entra no lugar do parâmetro. */
 const prompt = computed(() => splitAround((marker) => t('fileDrop.prompt', { browse: marker })));
 
-/* Lida na hora de desenhar, para a mensagem trocar junto com a língua. */
 const message = computed(() => {
   if (props.error) return props.error;
 
@@ -193,7 +157,6 @@ const browse = (): void => {
 const onChange = (): void => {
   choose(input.value?.files);
 
-  // Sem limpar, escolher de novo o mesmo arquivo não dispara `change`.
   if (input.value) input.value.value = '';
 };
 
@@ -201,7 +164,6 @@ const clear = async (): Promise<void> => {
   rejection.value = null;
   emit('update:modelValue', null);
 
-  // O botão de remover some junto com o arquivo. O foco não pode cair no vazio.
   await nextTick();
   browseButton.value?.focus();
 };
@@ -217,8 +179,6 @@ const onDragLeave = (): void => {
   depth.value = Math.max(0, depth.value - 1);
 };
 
-/* Sem `preventDefault` aqui o navegador abre o arquivo solto e a tela se perde,
-   inclusive com a área travada. */
 const onDragOver = (event: DragEvent): void => {
   event.preventDefault();
 
@@ -311,7 +271,6 @@ const onDrop = (event: DragEvent): void => {
     </p>
     <p v-else-if="hint" :id="messageId" class="dl-file__message">{{ hint }}</p>
 
-    <!-- A área troca de forma sem aviso sonoro. Quem não vê a troca ouve o arquivo escolhido. -->
     <span class="dl-file__sr" aria-live="polite">
       {{ modelValue ? t('fileDrop.selected', { name: modelValue.name }) : '' }}
     </span>
@@ -358,7 +317,6 @@ const onDrop = (event: DragEvent): void => {
     background var(--dl-motion-fast, 120ms) var(--dl-easing);
 }
 
-/* Com arquivo, a área vira a linha do arquivo: o espaço de soltar já cumpriu o papel. */
 .dl-file__zone--filled {
   flex-direction: row;
   justify-content: flex-start;

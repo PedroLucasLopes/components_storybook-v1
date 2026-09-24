@@ -1,15 +1,3 @@
-/**
- * `@pedrolucaslopes/dotlog-ui` — componentes e tokens compartilhados pelos
- * fronts do ecossistema SSO.
- *
- * O pacote é o contrato de interface, do mesmo jeito que
- * `@pedrolucaslopes/sso-client` é o contrato de autenticação. Tem repositório
- * próprio e chega a cada front pelo npm, nunca por caminho relativo: cada
- * aplicação continua com repositório, infraestrutura e deploy próprios.
- */
-
-/* ------------------------------- tema -------------------------------- */
-
 export {
   breakpoints,
   darkColors,
@@ -39,8 +27,6 @@ export {
   type ThemePreferences,
 } from './theme/useTheme';
 
-/* ------------------------------- lingua ------------------------------ */
-
 export { createDotlogLocale } from './i18n/createDotlogLocale';
 export { useLanguages, type Language } from './i18n/useLanguages';
 export {
@@ -51,8 +37,6 @@ export {
   LOCALE_STORAGE_KEY,
 } from './i18n/languages';
 
-/* ----------------------------- permissao ----------------------------- */
-
 export {
   permits,
   providePermissions,
@@ -61,8 +45,6 @@ export {
   type Permission,
   type PermissionContext,
 } from './access/usePermissions';
-
-/* ---------------------------- componentes ---------------------------- */
 
 export { default as DlTextField } from './components/DlTextField.vue';
 export { default as DlMoneyField } from './components/DlMoneyField.vue';
@@ -94,8 +76,6 @@ export { default as DlRoutePath } from './components/DlRoutePath.vue';
 export { default as DlRouteTree } from './components/DlRouteTree.vue';
 export { default as DlMasterDetail } from './components/DlMasterDetail.vue';
 
-/* --------------------------- tela dinamica --------------------------- */
-
 export { httpMethodStatus } from './data/httpMethods';
 export { humanize, inferColumns } from './data/inferColumns';
 export type { InferOptions } from './data/inferColumns';
@@ -114,13 +94,9 @@ export {
 } from './data/routeTree';
 export type { RouteTreeEntry, RouteTreeFilter, RouteTreeNode } from './data/routeTree';
 
-/* ------------------------------ feedback ----------------------------- */
-
 export { default as DlToastHost } from './feedback/DlToastHost.vue';
 export { toast, useToasts } from './feedback/useToast';
 export type { Toast, ToastKind, ToastOptions, ToastAction } from './feedback/useToast';
-
-/* ------------------------------ graficos ----------------------------- */
 
 export { default as DlChartFrame } from './charts/DlChartFrame.vue';
 export { default as DlBarChart } from './charts/DlBarChart.vue';

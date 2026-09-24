@@ -1,35 +1,12 @@
 <script setup lang="ts">
-/**
- * Esqueleto de conteúdo.
- *
- * ## Por que esqueleto e não giro
- *
- * Um indicador circular diz "espere". Um esqueleto diz "vai aparecer aqui, com
- * esta forma". A segunda mensagem é melhor porque o olho já se posiciona, e
- * quando o dado chega nada salta: o bloco cinza vira texto no mesmo lugar.
- *
- * ## O brilho atravessa, não pisca
- *
- * Opacidade piscando lê como defeito. Um brilho que varre da esquerda para a
- * direita lê como carregamento, e é o que o olho já aprendeu em toda parte.
- *
- * ## Quem prefere menos movimento vê um bloco parado
- *
- * Com `prefers-reduced-motion` o brilho some e fica a forma. A informação
- * "está carregando" continua, porque ela está na forma, não na animação.
- */
 import { useDotlogText } from '../i18n/useDotlogText';
 
 withDefaults(
   defineProps<{
-    /** Quantos blocos empilhar. */
     lines?: number;
-    /** Altura de cada bloco. */
     height?: string;
-    /** Largura. `varied` faz a última linha mais curta, como texto real. */
     width?: string;
     variant?: 'text' | 'block' | 'circle';
-    /** Última linha mais curta, como parágrafo de verdade. */
     varied?: boolean;
   }>(),
   {
@@ -90,8 +67,6 @@ const { t } = useDotlogText();
   overflow: hidden;
 }
 
-/* O brilho é um gradiente que atravessa. `transform` só, para a animação
-   rodar no compositor e não forçar novo layout a cada quadro. */
 .dl-skeleton__bar::after {
   content: '';
   position: absolute;

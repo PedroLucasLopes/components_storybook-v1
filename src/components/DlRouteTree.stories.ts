@@ -13,10 +13,6 @@ import DlSectionCard from './DlSectionCard.vue';
 import DlStatusChip from './DlStatusChip.vue';
 import DlTextField from './DlTextField.vue';
 
-/**
- * As rotas de uma aplicação como árvore, e o detalhe ao lado. É como o console
- * do SSO mostra as rotas dentro de um projeto.
- */
 const meta: Meta = {
   title: 'Data/Route tree',
   parameters: {

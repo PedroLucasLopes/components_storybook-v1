@@ -92,11 +92,12 @@ clarear (`surfaceVariant`), não escurecer em volta.
 
 ---
 
-## 🌐 Idioma: inglês na API, português no comentário
+## 🌐 Idioma: código em inglês, sem comentário
 
-É a convenção do repositório inteiro, a mesma do `sso-client`. Prop, evento, tipo e título de story
-em **inglês**; comentário e docstring em **português**, porque explicam decisão para quem mantém. O
-texto que aparece na tela não é escrito em língua nenhuma dentro do componente: vem da tradução.
+É a convenção do ecossistema inteiro, a mesma do `sso-client`. Prop, evento, tipo, título de story e
+todo nome de variável em **inglês**. **O código não leva comentário**: o que explica decisão mora
+neste `CLAUDE.md` e nas stories. O texto que aparece na tela não é escrito em língua nenhuma dentro
+do componente: vem da tradução.
 
 ## 🗣️ Texto de tela em três línguas
 
@@ -492,7 +493,7 @@ src/
 ## ✅ Invariantes ao alterar
 
 - Componente não escreve hex. Escreve token. A exceção é `DlFlag`: bandeira tem cor oficial.
-- API em inglês, comentário em português.
+- API e nomes em inglês, e o código sem comentário.
 - Texto de tela não nasce no componente. Vai para `src/i18n/locales/`, nas três línguas, e sai por
   `useDotlogText`. Prop de rótulo tem padrão `undefined` e cai na tradução.
 - Mexeu numa tradução, rode `npm run check:locales`.

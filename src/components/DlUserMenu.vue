@@ -1,23 +1,4 @@
 <script setup lang="ts">
-/**
- * Menu de quem entrou: identidade, tema, língua e saída.
- *
- * **O tema tem três escolhas, não um interruptor.** "Seguir o sistema" é uma
- * preferência própria, e é a padrão. Um interruptor claro/escuro obrigaria a
- * pessoa a abrir mão dela para mudar uma vez. Ver `useThemePreferences`.
- *
- * **As línguas são as que a aplicação registrou.** A lista sai de
- * `useLanguages`: cada JSON de tradução da aplicação vira uma opção, com o nome
- * na própria língua e a bandeira do país. Com uma língua só a seção nem
- * aparece, porque uma opção não é escolha.
- *
- * **Sair fica por último, separado e em vermelho.** É a única ação do menu que
- * tira a pessoa do que ela estava fazendo, e não pode ser clicada por engano
- * no lugar de trocar o tema.
- *
- * **Iniciais no lugar de foto.** O SSO não guarda foto, e buscar a do provedor
- * a cada tela avisaria o Google de cada uso do console.
- */
 import { computed, useId } from 'vue';
 import { useDotlogText } from '../i18n/useDotlogText';
 import { useLanguages } from '../i18n/useLanguages';
@@ -29,22 +10,18 @@ const props = withDefaults(
   defineProps<{
     name: string;
     email: string;
-    /** Papel na aplicação, mostrado sob o nome. */
     role?: string;
     themeMode: ThemeMode;
     signingOut?: boolean;
-    /** Só o avatar no gatilho, para barra estreita. */
     compact?: boolean;
   }>(),
   { signingOut: false, compact: false },
 );
 
-/** Menu aberto. Com `v-model:open`, quem usa abre e fecha por fora. */
 const open = defineModel<boolean>('open', { default: false });
 
 const emit = defineEmits<{
   'update:themeMode': [mode: ThemeMode];
-  /** Depois da troca, para quem quiser guardar a escolha também em outro lugar. */
   'update:locale': [code: string];
   signOut: [];
 }>();
@@ -318,7 +295,6 @@ const chooseLanguage = (code: string): void => {
   letter-spacing: 0;
 }
 
-/* Sem linha entre tema e língua: são preferências da mesma família. */
 .dl-user__section--languages {
   padding-top: 0;
 }
@@ -358,7 +334,6 @@ const chooseLanguage = (code: string): void => {
   outline-offset: 2px;
 }
 
-/* A escolhida não depende só de cor: tem marca de conferido e peso maior. */
 .dl-user__language--active {
   font-weight: 600;
   border-color: rgba(var(--v-theme-primary), 0.3);

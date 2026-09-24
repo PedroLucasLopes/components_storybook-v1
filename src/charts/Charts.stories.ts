@@ -8,12 +8,6 @@ import DlSkeleton from '../components/DlSkeleton.vue';
 import { seriesColor } from './palette';
 import { currency } from '../mocks';
 
-/**
- * A paleta de séries é separada da paleta de estado. Verde de sucesso não vira
- * "série 3": usar cor reservada numa barra qualquer faz um dado comum parecer
- * alerta.
- */
-
 const meta: Meta = {
   title: 'Charts/Overview',
   parameters: {
@@ -33,8 +27,6 @@ const meta: Meta = {
 export default meta;
 
 type Story = StoryObj;
-
-/* ------------------------------ dados ------------------------------- */
 
 const byCategory = [
   { label: 'Scaffolding', value: 48200 },
@@ -215,7 +207,6 @@ export const Lines: Story = {
     setup() {
       const dark = computed(() => useDark(globals));
 
-      // Indexado à primeira observação: uma escala só, como manda o método.
       const indexed = (values: number[]) =>
         values.map((v) => Math.round((v / values[0]) * 100));
 

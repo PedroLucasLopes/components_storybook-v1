@@ -1,22 +1,4 @@
 <script setup lang="ts">
-/**
- * Linha e área para mudança ao longo do tempo. É o gráfico de "ondas".
- *
- * **Uma escala só.** Nunca dois eixos. Duas medidas de grandeza diferente viram
- * dois gráficos, ou uma indexada a uma base comum. Eixo duplo é a forma mais
- * fácil de sugerir correlação que não existe, e por isso não existe aqui.
- *
- * **Área só com uma série, ou empilhada.** Duas áreas soltas se cobrem e a de
- * baixo fica ilegível. Com duas ou mais séries independentes, linha.
- *
- * **Mira vertical, não ponto por ponto.** Passar o mouse escolhe o instante
- * mais próximo no eixo do tempo e mostra TODAS as séries daquele instante. É a
- * pergunta que a pessoa faz olhando para um gráfico de tempo: "o que acontecia
- * aqui?", não "quanto vale este pixel?".
- *
- * Especificações de marca: linha de 2px, marcador de 8px com anel da superfície
- * para não se perder na linha, grade recessiva só na horizontal.
- */
 import { computed, ref } from 'vue';
 
 export interface AreaSeries {
@@ -27,11 +9,9 @@ export interface AreaSeries {
 
 const props = withDefaults(
   defineProps<{
-    /** Rótulos do eixo do tempo. Mesma quantidade dos valores de cada série. */
     labels: string[];
     series: AreaSeries[];
     format?: (value: number) => string;
-    /** Preenche sob a linha. Use só com uma série. */
     filled?: boolean;
     height?: number;
   }>(),
@@ -64,7 +44,6 @@ const lineOf = (values: number[]): string =>
 const areaOf = (values: number[]): string =>
   `${lineOf(values)} L ${xAt(values.length - 1)} ${PAD.top + plotH.value} L ${xAt(0)} ${PAD.top + plotH.value} Z`;
 
-/** Quatro linhas de grade: o bastante para dar escala sem virar gaiola. */
 const gridLines = computed(() =>
   [0, 0.25, 0.5, 0.75, 1].map((fraction) => ({
     y: PAD.top + plotH.value * (1 - fraction),
@@ -74,7 +53,6 @@ const gridLines = computed(() =>
 
 const active = ref<number | null>(null);
 
-/** Mira: o índice mais próximo do cursor, não o ponto sob ele. */
 const onMove = (event: MouseEvent): void => {
   const svg = event.currentTarget as SVGSVGElement;
   const rect = svg.getBoundingClientRect();
@@ -96,7 +74,6 @@ const onMove = (event: MouseEvent): void => {
       @mousemove="onMove"
       @mouseleave="active = null"
     >
-      <!-- Grade recessiva, só horizontal: vertical não ajuda a ler valor. -->
       <g class="dl-area__grid">
         <line
           v-for="line in gridLines"
@@ -127,7 +104,6 @@ const onMove = (event: MouseEvent): void => {
         fill="none"
       />
 
-      <!-- Mira e marcadores do instante escolhido. -->
       <g v-if="active !== null">
         <line
           :x1="xAt(active)"
@@ -161,7 +137,6 @@ const onMove = (event: MouseEvent): void => {
       </g>
     </svg>
 
-    <!-- A dica responde "o que acontecia aqui", com TODAS as séries. -->
     <Transition name="dl-area-tip">
       <div v-if="active !== null" class="dl-area__tip">
         <p class="dl-area__tip-title">{{ labels[active] }}</p>
@@ -209,7 +184,6 @@ const onMove = (event: MouseEvent): void => {
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
-  /* O traço se desenha da esquerda para a direita ao entrar. */
   stroke-dasharray: 2000;
   stroke-dashoffset: 2000;
   animation: dl-area-draw 900ms var(--dl-easing) forwards;
@@ -236,8 +210,6 @@ const onMove = (event: MouseEvent): void => {
   opacity: 0.6;
 }
 
-/* Anel da superfície em volta do marcador: sem ele o ponto some dentro da
-   linha da própria cor. */
 .dl-area__marker {
   stroke: var(--dl-surface);
   stroke-width: 2;

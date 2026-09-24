@@ -1,24 +1,5 @@
 <script setup lang="ts">
-/**
- * Campo de texto do ecossistema.
- *
- * Envolve o `VTextField` em vez de substituí-lo: acessibilidade, máscara de
- * foco e mensagem de erro do Vuetify continuam valendo. O que este componente
- * acrescenta é o que se repete em toda tela de gestão.
- *
- * - **`mono`** para identificador, chave e código. Fonte monoespaçada evita ler
- *   `l` por `1` e `O` por `0` num id que a pessoa vai copiar.
- * - **`copyable`** põe o botão de copiar no fim. Em tela de gestão, metade dos
- *   campos existe para ser copiada.
- * - **Rótulo fora do campo**, não flutuante. Formulário denso com rótulo
- *   flutuante fica ilegível quando preenchido: o rótulo some e sobra um valor
- *   sem contexto.
- * - **Espaço reservado para a mensagem**, para o formulário não pular de altura
- *   ao validar.
- */
 import { computed, ref } from 'vue';
-// Import explícito pelo mesmo motivo do `DlSelect`: o componente troca de
-// forma em tempo de execução, e o auto-import da aplicação só vê tag estática.
 import { VTextarea, VTextField } from 'vuetify/components';
 import { useDotlogText } from '../i18n/useDotlogText';
 
@@ -26,33 +7,18 @@ const props = withDefaults(
   defineProps<{
     modelValue?: string | number | null;
     label?: string;
-    /** Texto de apoio, abaixo do campo. Some quando há erro. */
     hint?: string;
     placeholder?: string;
-    /** Mensagem de erro. Presente significa campo inválido. */
     error?: string | null;
     type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'date';
-    /**
-     * Linhas visíveis. Com valor, o campo vira área de texto que cresce com o
-     * conteúdo: chave PEM, descrição, lista colada.
-     */
     rows?: number;
     required?: boolean;
     disabled?: boolean;
     readonly?: boolean;
-    /** Fonte monoespaçada. Para id, chave, código. */
     mono?: boolean;
-    /** Mostra o botão de copiar. */
     copyable?: boolean;
-    /** Ícone à esquerda, no formato `mdi-*`. */
     icon?: string;
-    /**
-     * Carregando o valor. Trava o campo e mostra um esqueleto no lugar do
-     * conteúdo: campo vazio e destravado convida a digitar por cima do que
-     * ainda vai chegar.
-     */
     loading?: boolean;
-    /** Reserva a linha da mensagem para o formulário não pular. */
     reserveError?: boolean;
     density?: 'default' | 'comfortable' | 'compact';
   }>(),
@@ -87,11 +53,8 @@ const copy = async (): Promise<void> => {
     await navigator.clipboard.writeText(text);
     justCopied.value = true;
     emit('copied', text);
-    // Confirmação curta: mais que isso e a pessoa duvida se copiou de novo.
     setTimeout(() => (justCopied.value = false), 1400);
   } catch {
-    /* Sem área de transferência (contexto inseguro, permissão negada): o campo
-       segue utilizável e a pessoa copia à mão. */
   }
 };
 

@@ -1,16 +1,4 @@
 <script setup lang="ts">
-/**
- * Lista de rótulo e valor, para a ficha de um registro.
- *
- * **É `<dl>`, não tabela nem grade de `<div>`.** O leitor de tela anuncia o par
- * "Client ID: 3f9a…", que é exatamente o que a pessoa procura numa ficha.
- *
- * **Copiar mora ao lado do valor.** Em ficha técnica, metade dos campos existe
- * para ser colada em outro lugar: client ID, redirect URI, e-mail.
- *
- * **Valor ausente é travessão, não vazio.** Espaço em branco parece campo que
- * não carregou; o travessão diz "não há".
- */
 import { ref } from 'vue';
 import { useDotlogText } from '../i18n/useDotlogText';
 
@@ -18,17 +6,14 @@ export interface DescriptionItem {
   key: string;
   label: string;
   value?: string | number | null;
-  /** Fonte monoespaçada: id, chave, URI. */
   mono?: boolean;
   copyable?: boolean;
-  /** Texto de apoio, abaixo do valor. */
   hint?: string;
 }
 
 withDefaults(
   defineProps<{
     items: DescriptionItem[];
-    /** Colunas no desktop. No telefone é sempre uma. */
     columns?: 1 | 2 | 3;
   }>(),
   { columns: 2 },
@@ -51,7 +36,6 @@ const copy = async (item: DescriptionItem): Promise<void> => {
     clearTimeout(timer);
     timer = setTimeout(() => (copiedKey.value = null), 1400);
   } catch {
-    /* Sem área de transferência a ficha continua legível e selecionável. */
   }
 };
 </script>

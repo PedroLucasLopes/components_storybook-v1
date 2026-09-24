@@ -20,16 +20,6 @@ import DlStatCard from './DlStatCard.vue';
 import DlStatusChip from './DlStatusChip.vue';
 import DlUserMenu from './DlUserMenu.vue';
 
-/**
- * A casca inteira, montada como o console do SSO monta: o menu sai de
- * `deriveNavGroups` sobre as permissões do papel, e só o que o banco não guarda
- * (rótulo, ícone, grupo) vem de `overrides`.
- *
- * Os textos da página vêm dos JSON da aplicação de exemplo, em
- * `src/mocks/locales`, chamados com `t()`. Trocar a língua no menu do usuário
- * traduz a casca, a tabela e a página juntas, sem nada além desses arquivos.
- */
-
 const shell = (permissions: Permission[], role: string) => ({
   components: { DlAppShell, DlUserMenu, DlPageHeader, DlStatCard, DlDataTable, DlStatusChip },
   setup() {
@@ -48,7 +38,6 @@ const shell = (permissions: Permission[], role: string) => ({
       setTimeout(() => (signingOut.value = false), 1500);
     };
 
-    // Computados: rótulo lido na hora de desenhar troca junto com a língua.
     const groups = computed<NavGroup[]>(() => [
       {
         key: 'home',
@@ -58,7 +47,6 @@ const shell = (permissions: Permission[], role: string) => ({
         overrides: {
           '/project': { label: t('nav.projects'), icon: 'mdi-apps', to: '/projects', group: 'catalogue', order: 1 },
           '/user': { label: t('nav.users'), icon: 'mdi-account-multiple-outline', to: '/users', group: 'catalogue', order: 2 },
-          // Rotas e papéis moram dentro de cada projeto, e não no menu. Ver `Data/Route tree`.
           '/role': { hidden: true },
           '/route': { hidden: true },
           '/clientkey': { label: t('nav.clientKeys'), icon: 'mdi-key-variant', to: '/client-keys', group: 'credentials', order: 1 },

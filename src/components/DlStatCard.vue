@@ -1,17 +1,4 @@
 <script setup lang="ts">
-/**
- * Indicador de painel: um número e o que ele significa.
- *
- * **O número conta até o valor, e o leitor de tela não assiste.** A contagem
- * dá a sensação de dado chegando, mas só para quem vê. O texto animado fica
- * `aria-hidden`, e o valor final vai inteiro para quem ouve, de uma vez.
- *
- * **Carregando mostra a forma do cartão.** Um zero provisório seria lido como
- * dado de verdade: "não há nenhum projeto" é uma informação, e errada.
- *
- * **Clicável só quando leva a algum lugar.** Com `interactive` o cartão vira
- * botão, com foco e teclado; sem isso é só leitura, e não finge ser link.
- */
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import DlSkeleton from './DlSkeleton.vue';
 
@@ -19,15 +6,11 @@ const props = withDefaults(
   defineProps<{
     label: string;
     value: number | string | null;
-    /** Ícone `mdi-*`. */
     icon?: string;
-    /** Texto de apoio, abaixo do número. */
     hint?: string;
     tone?: 'primary' | 'success' | 'warning' | 'error' | 'info' | 'neutral';
     loading?: boolean;
-    /** Vira botão e emite `select`. */
     interactive?: boolean;
-    /** Formata números. Texto passa direto. */
     format?: (value: number) => string;
   }>(),
   { tone: 'primary', loading: false, interactive: false },
@@ -68,7 +51,6 @@ watch(
 
     const step = (now: number): void => {
       const progress = Math.min(1, (now - start) / duration);
-      // Desacelera no fim: o olho percebe o número assentando no valor.
       const eased = 1 - Math.pow(1 - progress, 3);
 
       shown.value = Math.round(from + (next - from) * eased);

@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import DlButton from './DlButton.vue';
 import DlSecretDialog from './DlSecretDialog.vue';
 
-/** Obviamente falso. Nenhuma story carrega material de chave de verdade. */
 const FAKE_KEY = btoa(
   '-----BEGIN PRIVATE KEY-----\n' +
     'STORYBOOK-EXAMPLE-THIS-IS-NOT-A-REAL-KEY-000000000000000000000000000000\n' +

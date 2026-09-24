@@ -25,8 +25,6 @@ export default meta;
 
 type Story = StoryObj;
 
-/* ------------------------------ dropdown ------------------------------ */
-
 const statuses = [
   { title: 'Available', value: 'AVAILABLE' },
   { title: 'Leased', value: 'LEASED' },
@@ -88,8 +86,6 @@ export const Dropdown: Story = {
   }),
 };
 
-/* -------------------------------- range ------------------------------- */
-
 export const Range: Story = {
   name: 'Numeric range',
   render: () => ({
@@ -124,8 +120,6 @@ export const Range: Story = {
     `,
   }),
 };
-
-/* ------------------------------- status ------------------------------- */
 
 export const Status: Story = {
   name: 'Status chip',
@@ -187,8 +181,6 @@ export const Status: Story = {
   }),
 };
 
-/* ------------------------------ expansion ----------------------------- */
-
 export const Expansion: Story = {
   render: () => ({
     components: { DlExpansion },
@@ -226,8 +218,6 @@ export const Expansion: Story = {
     `,
   }),
 };
-
-/* ----------------------------- confirmation --------------------------- */
 
 export const Confirmation: Story = {
   render: () => ({

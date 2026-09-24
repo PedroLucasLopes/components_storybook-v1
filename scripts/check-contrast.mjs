@@ -1,17 +1,15 @@
-/* Valida a paleta contra a WCAG 2.1: 4.5:1 para texto normal, 3:1 para texto
-   grande e para componentes de interface. */
 const lum = (hex) => {
   const c = hex.replace('#', '');
   const [r, g, b] = [0, 2, 4].map((i) => parseInt(c.slice(i, i + 2), 16) / 255);
   const f = (v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
   return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
 };
-const razao = (a, b) => {
+const ratio = (a, b) => {
   const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
   return (x + 0.05) / (y + 0.05);
 };
 
-const claro = {
+const light = {
   background: '#F5F5F7',
   surface: '#FFFFFF',
   surfaceVariant: '#ECECEF',
@@ -26,7 +24,7 @@ const claro = {
   info: '#1A6BAA',
 };
 
-const escuro = {
+const dark = {
   background: '#121216',
   surface: '#1A1A20',
   surfaceVariant: '#25252D',
@@ -41,30 +39,30 @@ const escuro = {
   info: '#7CC0F0',
 };
 
-const checar = (nome, tema) => {
-  console.log(`\n--- ${nome} ---`);
-  const pares = [
-    ['texto sobre surface', tema.onSurface, tema.surface, 4.5],
-    ['texto sobre background', tema.onSurface, tema.background, 4.5],
-    ['texto secundario sobre surface', tema.onSurfaceMuted, tema.surface, 4.5],
-    ['texto secundario sobre variant', tema.onSurfaceMuted, tema.surfaceVariant, 4.5],
-    ['primary sobre surface', tema.primary, tema.surface, 3],
-    ['onPrimary sobre primary', tema.onPrimary, tema.primary, 4.5],
-    ['success sobre surface', tema.success, tema.surface, 3],
-    ['warning sobre surface', tema.warning, tema.surface, 3],
-    ['error sobre surface', tema.error, tema.surface, 3],
-    ['info sobre surface', tema.info, tema.surface, 3],
-    ['outline sobre surface', tema.outline, tema.surface, 1.5],
+const check = (name, theme) => {
+  console.log(`\n--- ${name} ---`);
+  const pairs = [
+    ['texto sobre surface', theme.onSurface, theme.surface, 4.5],
+    ['texto sobre background', theme.onSurface, theme.background, 4.5],
+    ['texto secundario sobre surface', theme.onSurfaceMuted, theme.surface, 4.5],
+    ['texto secundario sobre variant', theme.onSurfaceMuted, theme.surfaceVariant, 4.5],
+    ['primary sobre surface', theme.primary, theme.surface, 3],
+    ['onPrimary sobre primary', theme.onPrimary, theme.primary, 4.5],
+    ['success sobre surface', theme.success, theme.surface, 3],
+    ['warning sobre surface', theme.warning, theme.surface, 3],
+    ['error sobre surface', theme.error, theme.surface, 3],
+    ['info sobre surface', theme.info, theme.surface, 3],
+    ['outline sobre surface', theme.outline, theme.surface, 1.5],
   ];
-  let falhas = 0;
-  for (const [label, fg, bg, minimo] of pares) {
-    const r = razao(fg, bg);
-    const ok = r >= minimo;
-    if (!ok) falhas += 1;
-    console.log(`  ${ok ? 'OK  ' : 'BAIXO'} ${label.padEnd(34)} ${r.toFixed(2)}:1  (min ${minimo})`);
+  let failures = 0;
+  for (const [label, fg, bg, minimum] of pairs) {
+    const r = ratio(fg, bg);
+    const ok = r >= minimum;
+    if (!ok) failures += 1;
+    console.log(`  ${ok ? 'OK  ' : 'BAIXO'} ${label.padEnd(34)} ${r.toFixed(2)}:1  (min ${minimum})`);
   }
-  return falhas;
+  return failures;
 };
 
-const total = checar('tema claro', claro) + checar('tema escuro', escuro);
+const total = check('tema claro', light) + check('tema escuro', dark);
 console.log(`\n${total === 0 ? 'paleta aprovada' : total + ' par(es) abaixo do minimo'}`);

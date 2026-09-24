@@ -3,22 +3,12 @@ import { ref } from 'vue';
 import type { ThemeMode } from '../theme/useTheme';
 import DlUserMenu from './DlUserMenu.vue';
 
-/**
- * O menu de quem entrou, já aberto.
- *
- * A seção de língua não é declarada em lugar nenhum: sai dos JSON que a
- * aplicação registrou no vue-i18n. Aqui são os três de `src/mocks/locales`, os
- * mesmos que o Storybook usa. Trocar a língua no menu troca o próprio menu, e a
- * barra de cima escolhe a língua de qualquer outra story.
- */
-
 const meta: Meta<typeof DlUserMenu> = {
   title: 'Navigation/User menu',
   component: DlUserMenu,
   parameters: {
     layout: 'padded',
     docs: {
-      // Cada story no próprio quadro: dois menus abertos na mesma página se sobreporiam.
       story: { inline: false, iframeHeight: 600 },
       description: {
         component:

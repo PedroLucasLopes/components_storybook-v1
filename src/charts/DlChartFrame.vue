@@ -1,30 +1,10 @@
 <script setup lang="ts">
-/**
- * Moldura comum a todo gráfico: título, legenda, estado vazio e **visão de
- * tabela**.
- *
- * ## A tabela não é opcional
- *
- * Três tons da paleta ficam abaixo de 3:1 contra a superfície clara. A regra de
- * alívio do método exige, nesse caso, rótulo direto **ou** visão de tabela, e
- * não é dispensável. Aqui vêm os dois: rótulo no gráfico e um botão que troca o
- * desenho por uma tabela com os mesmos números.
- *
- * Isso também resolve o resto: quem usa leitor de tela, quem vai imprimir, quem
- * precisa copiar o valor exato. Gráfico é resumo; tabela é o dado.
- *
- * ## A legenda existe sempre que houver duas séries ou mais
- *
- * Com uma série o título já diz o que é, e uma caixinha de legenda só ocupa
- * espaço. Com duas ou mais, identidade nunca pode depender só de cor.
- */
 import { computed, ref } from 'vue';
 import { useDotlogText } from '../i18n/useDotlogText';
 
 export interface ChartSeriesMeta {
   label: string;
   color: string;
-  /** Total ou valor de destaque, mostrado na legenda quando houver. */
   value?: string;
 }
 
@@ -33,9 +13,7 @@ const props = withDefaults(
     title: string;
     description?: string;
     series: ChartSeriesMeta[];
-    /** Cabeçalhos da visão de tabela. */
     tableHeaders?: string[];
-    /** Linhas da visão de tabela, já formatadas. */
     tableRows?: string[][];
     loading?: boolean;
     empty?: boolean;
@@ -58,10 +36,6 @@ const canToggleTable = computed(() => props.tableRows.length > 0);
 
 <template>
   <figure class="dl-chart">
-    <!-- O HTML exige `<figcaption>` como primeiro ou último filho DIRETO de
-         `<figure>`. Aninhado num `<div>` ele deixa de nomear a figura, e o Vite
-         avisa. Aqui dentro fica só título e descrição: o botão de tabela vai
-         fora, senão o rótulo dele entraria no nome acessível do gráfico. -->
     <figcaption class="dl-chart__caption">
       <span class="dl-chart__title">{{ title }}</span>
       <span v-if="description" class="dl-chart__description">{{ description }}</span>
@@ -110,7 +84,6 @@ const canToggleTable = computed(() => props.tableRows.length > 0);
       </Transition>
     </div>
 
-    <!-- Identidade nunca por cor sozinha: a legenda traz a marca E o texto. -->
     <ul v-if="hasLegend && !showTable" class="dl-chart__legend">
       <li v-for="item in series" :key="item.label" class="dl-chart__legend-item">
         <span class="dl-chart__swatch" :style="{ background: item.color }" aria-hidden="true" />
@@ -122,9 +95,6 @@ const canToggleTable = computed(() => props.tableRows.length > 0);
 </template>
 
 <style scoped>
-/* Grade em vez de um cabeçalho embrulhando legenda e botão: é o que deixa o
-   `<figcaption>` ser filho direto da `<figure>` e ainda ficar lado a lado com
-   o botão de tabela. Palco e legenda ocupam as duas colunas. */
 .dl-chart {
   margin: 0;
   display: grid;
@@ -252,8 +222,6 @@ const canToggleTable = computed(() => props.tableRows.length > 0);
   flex-shrink: 0;
 }
 
-/* O texto usa tinta de texto, nunca a cor da série: a marca ao lado é que
-   carrega a identidade. */
 .dl-chart__legend-label {
   color: var(--dl-on-surface-muted);
 }

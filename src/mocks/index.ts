@@ -1,21 +1,6 @@
-/**
- * Dados de exemplo para o Storybook. **Nada aqui vai para produção.**
- *
- * Existem para mostrar os componentes com conteúdo plausível: nome de
- * equipamento com tamanho real, identificador com a largura que ele tem de
- * verdade, situação em todos os estados possíveis. Componente testado só com
- * "Lorem ipsum" e três linhas esconde exatamente os problemas que aparecem
- * depois: coluna que estoura, pastilha que quebra em duas linhas, tabela que
- * não cabe.
- *
- * Os dois conjuntos são de aplicações diferentes de propósito. É o que mostra
- * que a tabela não sabe nada sobre o domínio de nenhuma delas.
- */
 import type { Permission } from '../access/usePermissions';
 import type { LifecycleExit, LifecycleStep } from '../components/DlLifecycle.vue';
 import type { StatusDefinition } from '../components/DlStatusChip.vue';
-
-/* ------------------------- KRLoc: equipamentos ------------------------- */
 
 export interface MockEquipment extends Record<string, unknown> {
   id: string;
@@ -36,13 +21,6 @@ export const equipment: MockEquipment[] = [
   { id: '0a92c7', code: 'KR-0190', name: 'Aluminium extension ladder 9m', status: 'LEASED', dailyRate: 30, lastSeen: '2026-09-11' },
 ];
 
-/**
- * Cores pedidas para a coluna de situação.
- *
- * `RETIRED` usa o tom `dark`, que resolve para `on-surface`: quase preto no
- * tema claro e quase branco no escuro. Preto fixo sumiria no tema escuro, e é
- * justamente o estado arquivado que precisa continuar legível.
- */
 export const equipmentStatus: Record<string, StatusDefinition> = {
   AVAILABLE: { label: 'Available', tone: 'success', icon: 'mdi-check-circle-outline' },
   LEASED: { label: 'Leased', tone: 'info', icon: 'mdi-truck-outline' },
@@ -51,32 +29,22 @@ export const equipmentStatus: Record<string, StatusDefinition> = {
   STOLEN: { label: 'Stolen', tone: 'error', icon: 'mdi-alert-outline' },
 };
 
-/* -------------------------- KRLoc: contratos --------------------------- */
-
-/** O caminho de um contrato, na ordem em que ele acontece. */
 export const contractSteps: LifecycleStep[] = [
   { key: 'PENDING', label: 'Pending', icon: 'mdi-file-document-edit-outline' },
   { key: 'ACTIVE', label: 'Active', icon: 'mdi-truck-delivery-outline' },
   { key: 'COMPLETED', label: 'Completed', icon: 'mdi-flag-checkered' },
 ];
 
-/** Cancelar é desvio, não etapa: só acontece antes de o contrato começar. */
 export const contractExits: LifecycleExit[] = [
   { key: 'CANCELLED', label: 'Cancelled', icon: 'mdi-cancel', tone: 'dark' },
 ];
 
-/**
- * Planilha de importação de equipamentos, com o cabeçalho que `POST
- * /equipment/upload` lê. Serve de conteúdo para o arquivo escolhido nas stories.
- */
 export const equipmentCsv = [
   'name,code,p_diary,p_weekly,p_biweekly,p_monthly,p_indemnity,status',
   '400L concrete mixer,KRBET,85,480,850,1500,9800,AVAILABLE',
   'Tubular scaffold 1.5m,KRAND,12,70,120,210,640,AVAILABLE',
   '20kg demolition hammer,KRMAR,140,790,1400,2500,7200,MAINTENANCE',
 ].join('\n');
-
-/* ---------------------------- SSO: projetos ---------------------------- */
 
 export interface MockProject extends Record<string, unknown> {
   id: string;
@@ -101,13 +69,6 @@ export const projectStatus: Record<string, StatusDefinition> = {
   ARCHIVED: { label: 'Archived', tone: 'dark', icon: 'mdi-archive-outline' },
 };
 
-/* ----------------------------- SSO: console ---------------------------- */
-
-/**
- * O que `GET /sso/me` poderia devolver para papéis de gestão do projeto do SSO.
- * Os papéis do SSO nascem vazios e cada ambiente marca as próprias rotas; estes
- * conjuntos são exemplos plausíveis para as stories, não um catálogo.
- */
 export const ssoViewerPermissions: Permission[] = [
   { path: '/project', method: 'GET' },
   { path: '/project/:id', method: 'GET' },
@@ -145,7 +106,6 @@ export const ssoAdminPermissions: Permission[] = [
   { path: '/user/:id', method: 'DELETE' },
 ];
 
-/** Único papel que gera chave privada de cliente. */
 export const ssoSuperadminPermissions: Permission[] = [
   ...ssoAdminPermissions,
   { path: '/clientkey/generate', method: 'POST' },
@@ -168,8 +128,6 @@ export const ssoRoutes: MockRoute[] = [
   { id: 'r6', method: 'POST', path: '/generate/contract/:id', project: 'KRLoc', roles: 2 },
 ];
 
-/* ------------------------- SSO: árvore de rotas ------------------------- */
-
 export interface MockCatalogRoute {
   id: string;
   method: string;
@@ -179,13 +137,6 @@ export interface MockCatalogRoute {
 
 const NO_ROLE = 'No role granted';
 
-/**
- * Catálogo de uma aplicação inteira, plano como o SSO guarda. Cobre o que a
- * árvore precisa resolver: vários métodos no mesmo caminho, parâmetros de nome
- * diferente no mesmo nível (`:id` e `:projectId`), filho de parâmetro
- * (`/equipment/:id/create`), prefixo sem rota própria (`/generate`) e nível
- * que só existe por dentro (`/lessee/lesseesbyclient`).
- */
 export const routeCatalog: MockCatalogRoute[] = (
   [
     ['GET', '/equipment'],
@@ -238,15 +189,12 @@ export interface MockPerson extends Record<string, unknown> {
   linked: boolean;
 }
 
-/** Domínio `example.com`, reservado pela RFC 2606 para exemplo. */
 export const ssoPeople: MockPerson[] = [
   { id: 'u1', name: 'Marina Albuquerque', email: 'marina.albuquerque@example.com', projects: 3, linked: true },
   { id: 'u2', name: 'Rafael Tavares', email: 'rafael.tavares@example.com', projects: 1, linked: true },
   { id: 'u3', name: 'Beatriz Nogueira Castanheira', email: 'beatriz.castanheira@example.com', projects: 2, linked: false },
   { id: 'u4', name: 'Joaquim Pires', email: 'joaquim.pires@example.com', projects: 0, linked: false },
 ];
-
-/* ------------------------------ formato ------------------------------- */
 
 export const currency = (value: number): string =>
   value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });

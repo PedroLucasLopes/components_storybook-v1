@@ -1,20 +1,9 @@
 <script setup lang="ts">
-/**
- * Bloco de conteúdo com título: a unidade das telas de detalhe.
- *
- * **O título é um heading de verdade.** Quem navega por leitor de tela pula de
- * seção em seção pelos headings; um `<div>` estilizado some dessa navegação.
- * `headingLevel` existe para a hierarquia continuar certa dentro de abas.
- *
- * **A contagem vai ao lado do título**, e não dentro do texto. "Redirect URIs 3"
- * se lê de relance; "Há 3 redirect URIs cadastradas" obriga a ler.
- */
 withDefaults(
   defineProps<{
     title: string;
     description?: string;
     count?: number | string;
-    /** Sem respiro interno, para tabela ou lista que já tem o próprio. */
     padded?: boolean;
     headingLevel?: 2 | 3;
   }>(),
@@ -27,7 +16,6 @@ withDefaults(
     <header class="dl-section__head">
       <div class="dl-section__heading">
         <component :is="`h${headingLevel}`" class="dl-section__title">
-          <!-- Título com forma própria, como um caminho de rota. O `title` continua obrigatório: é o texto de referência. -->
           <slot name="title">{{ title }}</slot>
           <span v-if="count !== undefined" class="dl-section__count">{{ count }}</span>
         </component>

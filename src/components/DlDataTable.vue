@@ -1,50 +1,15 @@
 <script setup lang="ts" generic="T extends Record<string, unknown>">
-/**
- * Tabela de gestão. É a tela principal de toda aplicação do ecossistema, então
- * ela carrega as decisões que o resto herda.
- *
- * ## Nada aqui é específico de uma aplicação
- *
- * As colunas chegam por prop. O KRLoc passa código, equipamento e diária; o SSO
- * passa projeto, clientId e situação; a próxima aplicação passa o que for dela.
- * O componente não conhece nenhum desses campos: ele lê `column.key` do objeto,
- * ou chama `column.format` quando o valor precisa de tratamento, ou entrega o
- * slot `col-<key>` quando a célula precisa de componente.
- *
- * ## Ações por permissão
- *
- * Cada ação declara o método e o caminho que ela exerce. Quem não pode, não vê.
- * Uma pessoa com `GET` mas sem `POST` continua enxergando a lista inteira e
- * simplesmente não recebe os botões de criar, editar e excluir. A decisão real
- * continua sendo do backend; isto evita mostrar caminho fechado.
- *
- * ## Responsivo de verdade, não tabela encolhida
- *
- * Abaixo do ponto de quebra a tabela **vira lista de cartões**. Tabela com
- * rolagem horizontal em telefone é hostil: some a coluna que importa e a pessoa
- * arrasta procurando. Cada linha vira um cartão com rótulo ao lado do valor.
- *
- * ## Paginação cega
- *
- * O backend do ecossistema não devolve total de registros, e listagem vazia
- * responde 404. A paginação trabalha com isso: avança enquanto vier página
- * cheia e para quando vier curta, sem inventar um número de páginas.
- */
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 import { usePermissions } from '../access/usePermissions';
 import { useDotlogText } from '../i18n/useDotlogText';
 
 export interface Column<Row> {
-  /** Chave do objeto, ou identificador livre quando houver slot `col-<key>`. */
   key: string;
   label: string;
-  /** Largura CSS. Sem valor, a coluna divide o espaço restante. */
   width?: string;
   align?: 'start' | 'center' | 'end';
-  /** Fonte monoespaçada: id, código, valor que se compara na vertical. */
   mono?: boolean;
-  /** Some primeiro quando falta largura. Use para dado de apoio. */
   secondary?: boolean;
   format?: (row: Row) => string;
 }
@@ -53,19 +18,10 @@ export interface RowAction<Row> {
   key: string;
   label: string;
   icon: string;
-  /** Método HTTP que a ação exerce. Com `path`, decide se ela aparece. */
   method: string;
   path: string;
   color?: string;
-  /**
-   * A ação principal da linha: vira botão redondo preenchido, na cor de `color`
-   * ou na `primary`, enquanto as outras seguem discretas.
-   *
-   * Um ícone apagado no meio de outros não diz qual é a ação que se espera da
-   * linha. Use em **uma** por linha: se tudo se destaca, nada se destaca.
-   */
   primary?: boolean;
-  /** Desabilita por ESTADO do registro, não por permissão. Ver a nota abaixo. */
   unavailable?: (row: Row) => boolean;
 }
 
@@ -73,20 +29,15 @@ const props = withDefaults(
   defineProps<{
     columns: Column<T>[];
     rows: T[];
-    /** Campo que identifica a linha. Precisa ser único. */
     rowKey?: string;
     actions?: RowAction<T>[];
     loading?: boolean;
-    /** Listagem vazia é situação normal neste ecossistema, não erro. */
     emptyTitle?: string;
     emptyDescription?: string;
     page?: number;
-    /** Quantidade pedida por página. Página curta significa fim da lista. */
     limit?: number;
     density?: 'default' | 'comfortable' | 'compact';
-    /** Sem borda nem raio, para dentro de um `DlSectionCard`, que já tem os dele. */
     bare?: boolean;
-    /** Barra de páginas. Desligue em tabela curta e completa, como a de dentro de uma ficha. */
     paged?: boolean;
   }>(),
   {
@@ -111,7 +62,6 @@ const { can } = usePermissions();
 const { mdAndDown } = useDisplay();
 const { t } = useDotlogText();
 
-/** Ações que esta pessoa pode exercer. As demais nem entram no DOM. */
 const visibleActions = computed(() =>
   props.actions.filter((action) => can(action.method, action.path)),
 );
@@ -130,16 +80,12 @@ const valueOf = (row: T, column: Column<T>): string => {
 
 const keyOf = (row: T, index: number): string => String(row[props.rowKey] ?? index);
 
-/* Página cheia sugere que há mais; página curta é o fim. Sem total vindo do
-   servidor, é o que dá para afirmar sem mentir. */
 const hasNext = computed(() => props.rows.length >= props.limit);
 const hasPrevious = computed(() => props.page > 1);
 </script>
 
 <template>
   <div class="dl-table" :class="{ 'dl-table--bare': bare }">
-    <!-- Carregando: esqueleto com a forma da tabela, não um giro no vazio.
-         A pessoa já vê onde o conteúdo vai aparecer. -->
     <div v-if="loading" class="dl-table__skeleton" role="status" aria-live="polite">
       <span class="dl-table__sr">{{ t('common.loading') }}</span>
       <div v-for="n in 6" :key="n" class="dl-table__skeleton-row" />
@@ -152,7 +98,6 @@ const hasPrevious = computed(() => props.page > 1);
       <slot name="empty-action" />
     </div>
 
-    <!-- Telefone e tablet: cartões. Ver a nota no topo do arquivo. -->
     <div v-else-if="mdAndDown" class="dl-table__cards">
       <article
         v-for="(row, index) in rows"
@@ -221,9 +166,6 @@ const hasPrevious = computed(() => props.page > 1);
 
             <td v-if="visibleActions.length" class="dl-table__actions">
               <div class="dl-table__actions-inner">
-                <!-- `rounded: md` é o padrão de botão desta biblioteca, e ele vence
-                     o círculo que o Vuetify dá ao botão de ícone. A ação principal
-                     pede o círculo de volta: é ele que a separa dos vizinhos. -->
                 <VBtn
                   v-for="action in visibleActions"
                   :key="action.key"
@@ -281,7 +223,6 @@ const hasPrevious = computed(() => props.page > 1);
   color: var(--dl-on-surface);
 }
 
-/* Borda dupla lê como tabela solta dentro de outra caixa. */
 .dl-table--bare {
   border: none;
   border-radius: 0;
@@ -346,7 +287,6 @@ const hasPrevious = computed(() => props.page > 1);
   background: var(--dl-surface-variant);
 }
 
-/* Foco visível é requisito de navegação por teclado, não enfeite. */
 .dl-table__grid tbody tr:focus-visible {
   outline: 2px solid var(--dl-primary);
   outline-offset: -2px;
@@ -370,9 +310,6 @@ const hasPrevious = computed(() => props.page > 1);
   justify-content: flex-end;
 }
 
-/* Botão de ícone quadrado, que é o que faz o redondo sair redondo: a altura vem
-   da densidade e a largura, do tamanho, e sem isto a ação principal virava uma
-   elipse. Vale para todas: área de toque igual para o dedo. */
 .dl-table__actions-inner :deep(.v-btn--icon) {
   width: auto;
   aspect-ratio: 1;
@@ -465,7 +402,6 @@ const hasPrevious = computed(() => props.page > 1);
   50% { opacity: 0.9; }
 }
 
-/* Quem prefere menos movimento não recebe a pulsação. */
 @media (prefers-reduced-motion: reduce) {
   .dl-table__skeleton-row { animation: none; }
   .dl-table__grid tbody tr { transition: none; }

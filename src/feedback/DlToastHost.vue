@@ -1,25 +1,4 @@
 <script setup lang="ts">
-/**
- * Onde os avisos aparecem. Monte **uma vez**, perto da raiz da aplicação.
- *
- * ## Duas regiões vivas, não uma
- *
- * Erro entra numa região `role="alert"`, que o leitor de tela interrompe para
- * anunciar. Os demais entram numa `role="status"`, que espera a leitura atual
- * terminar. Jogar tudo em `alert` faz o leitor cortar a pessoa no meio de uma
- * frase para dizer "salvo com sucesso", e aí ela desliga o som.
- *
- * ## Canto inferior, largura inteira no telefone
- *
- * No desktop fica no canto, longe do conteúdo. No telefone ocupa a largura,
- * porque um cartão estreito no canto de uma tela de 375px vira uma tira
- * ilegível. Fica acima da área de gesto do sistema.
- *
- * ## Quem prefere menos movimento não recebe deslizamento
- *
- * Com `prefers-reduced-motion`, a entrada é um aparecer simples. O aviso
- * continua chegando; só não desliza.
- */
 import { computed } from 'vue';
 import { useDotlogText } from '../i18n/useDotlogText';
 import { useToasts, type Toast, type ToastKind } from './useToast';
@@ -52,7 +31,6 @@ const onAction = (item: Toast): void => {
 
 <template>
   <div class="dl-toasts">
-    <!-- Erro interrompe o leitor de tela; o resto espera. Ver a nota acima. -->
     <div class="dl-toasts__region" role="alert" aria-live="assertive">
       <TransitionGroup name="dl-toast">
         <article
@@ -168,7 +146,6 @@ const onAction = (item: Toast): void => {
   color: var(--dl-on-surface);
 }
 
-/* A faixa à esquerda repete o tipo em cor, sem depender só do ícone. */
 .dl-toast--success { border-left-color: var(--dl-success); }
 .dl-toast--info { border-left-color: var(--dl-info); }
 .dl-toast--warning { border-left-color: var(--dl-warning); }
@@ -227,7 +204,6 @@ const onAction = (item: Toast): void => {
   transform: translateY(10px);
 }
 
-/* Os que ficam deslizam para o lugar em vez de saltar. */
 .dl-toast-move {
   transition: transform var(--dl-motion-normal, 200ms) var(--dl-easing);
 }
@@ -245,8 +221,6 @@ const onAction = (item: Toast): void => {
   }
 }
 
-/* No telefone ocupa a largura: cartão estreito no canto de uma tela de 375px
-   vira uma tira ilegível. */
 @media (max-width: 599px) {
   .dl-toasts {
     left: 12px;

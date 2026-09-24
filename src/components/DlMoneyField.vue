@@ -1,29 +1,4 @@
 <script setup lang="ts">
-/**
- * Valor em dinheiro, digitado do jeito da língua da tela.
- *
- * **O separador é da língua, não do teclado.** Em português "1.250,50" é mil
- * duzentos e cinquenta; em inglês é "1,250.50". Um `<input type="number">` só
- * entende ponto decimal, e quem digita vírgula perde o valor sem aviso. Aqui o
- * texto é lido pelas regras de `Intl.NumberFormat` da língua corrente.
- *
- * **Colar "12.50" numa tela em português continua dando doze e cinquenta.** Sem
- * o separador decimal da língua no texto, um ponto ou uma vírgula seguidos de
- * uma ou duas casas no fim são lidos como decimal: é o valor copiado de outro
- * sistema. Com três casas, são milhar.
- *
- * **O símbolo fica fora do texto**, antes ou depois do número conforme a língua
- * ("R$ 12,50", "12,50 €"). Dentro do texto ele atrapalharia a edição.
- *
- * **Formata ao sair do campo, não durante a digitação.** Reescrever o texto a
- * cada tecla move o cursor e engole o que a pessoa escreve.
- *
- * **A moeda é do negócio, não da língua.** A locadora cobra em reais com a tela
- * em inglês, por isso `currency` é obrigatório: nenhum padrão adivinha isso.
- *
- * O valor que sai é número arredondado às casas da moeda, ou `null` com o campo
- * vazio ou com texto que não é valor.
- */
 import { computed, ref, useId, watch } from 'vue';
 import { useLocale } from 'vuetify';
 import { useDotlogText } from '../i18n/useDotlogText';
@@ -31,21 +6,15 @@ import { useDotlogText } from '../i18n/useDotlogText';
 const props = withDefaults(
   defineProps<{
     modelValue?: number | null;
-    /** Código ISO 4217: `BRL`, `USD`, `EUR`. */
     currency: string;
     label?: string;
-    /** Texto de apoio, abaixo do campo. Some quando há erro. */
     hint?: string;
-    /** Sem valor, o zero no formato da língua: "0,00". */
     placeholder?: string;
-    /** Mensagem de erro. Presente significa campo inválido, e vence a conferência daqui. */
     error?: string | null;
     required?: boolean;
     disabled?: boolean;
     readonly?: boolean;
-    /** Aceita valor negativo, como um ajuste ou um estorno. */
     allowNegative?: boolean;
-    /** Reserva a linha da mensagem para o formulário não pular. */
     reserveError?: boolean;
     density?: 'default' | 'comfortable' | 'compact';
   }>(),
@@ -70,7 +39,6 @@ const id = useId();
 
 const code = computed(() => locale.current.value || 'en');
 
-/** Separadores, símbolo e casas da moeda na língua corrente. */
 const shape = computed(() => {
   const money = new Intl.NumberFormat(code.value, { style: 'currency', currency: props.currency });
   const parts = money.formatToParts(1234567.5);
@@ -98,7 +66,6 @@ const plain = computed(
 
 const escape = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-/** Número, `null` para vazio, ou `undefined` para texto que não é valor. */
 const parse = (text: string): number | null | undefined => {
   const { decimal, group, symbol, digits } = shape.value;
   let raw = text.replaceAll(symbol, '').replace(/[\s  ]/g, '');
@@ -114,8 +81,6 @@ const parse = (text: string): number | null | undefined => {
   if (raw.includes(decimal)) {
     raw = raw.replaceAll(group, '').replace(decimal, '.');
   } else {
-    // Sem o decimal da língua: o outro sinal com uma ou duas casas no fim é
-    // decimal colado de outro sistema; em qualquer outra posição, é milhar.
     const other = decimal === ',' ? '.' : ',';
     const pasted = raw.match(new RegExp(`^(\\d+)${escape(other)}(\\d{1,2})$`));
 
@@ -139,8 +104,6 @@ const text = ref(display(props.modelValue));
 const focused = ref(false);
 const touched = ref(false);
 
-// Valor vindo de fora e troca de língua reescrevem o texto, menos durante a
-// digitação, quando o valor de fora é o próprio eco do que a pessoa escreve.
 watch([() => props.modelValue, plain], ([value]) => {
   if (!focused.value) text.value = display(value);
 });
@@ -228,7 +191,6 @@ const onFocus = (isFocused: boolean): void => {
   margin-left: 2px;
 }
 
-/* Algarismos de largura fixa: valores um abaixo do outro alinham pela casa. */
 .dl-money__input :deep(input) {
   font-variant-numeric: tabular-nums;
 }

@@ -1,29 +1,12 @@
 <script setup lang="ts">
-/**
- * Abas de uma tela de detalhe, com a mesma regra de permissão do menu.
- *
- * **Aba que a pessoa não alcança não aparece.** Mesma lógica da navegação e da
- * tabela: uma aba "Client keys" que abre num 403 promete o que não entrega.
- * Com `permission`, a aba só entra se `usePermissions` deixar.
- *
- * **Aba escondida não fica selecionada.** Se a selecionada deixar de estar
- * visível, por troca de papel ou por link antigo, a primeira visível assume.
- * Sem isso a tela mostraria o painel de algo que a pessoa não pode ver.
- *
- * **O painel troca com uma transição curta**, para a mudança ser percebida
- * sem obrigar a esperar. Quem prefere menos movimento recebe a troca seca.
- */
 import { computed, watch } from 'vue';
 import { usePermissions } from '../access/usePermissions';
 
 export interface TabItem {
   key: string;
   label: string;
-  /** Ícone `mdi-*`. */
   icon?: string;
-  /** Quantidade ao lado do rótulo. */
   count?: number | string;
-  /** Método e caminho da API que liberam a aba. Sem isto, sempre aparece. */
   permission?: { method: string; path: string };
 }
 

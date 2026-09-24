@@ -1,25 +1,4 @@
 <script setup lang="ts">
-/**
- * Carregamento de tela, em três formas, porque são três situações diferentes.
- *
- * | Forma | Quando | Bloqueia? |
- * |---|---|---|
- * | `bar` | troca de rota, busca em segundo plano | não |
- * | `inline` | um pedaço da tela, dentro de um cartão | não |
- * | `overlay` | operação que não pode ser interrompida | sim |
- *
- * **A barra é o padrão para navegação.** Ela avisa sem tirar a tela de quem
- * ainda está lendo. Overlay em troca de rota é agressivo: apaga o que a pessoa
- * tinha na frente por causa de uma espera que costuma durar menos de um
- * segundo.
- *
- * **Overlay é para o que não pode ser interrompido**: gerar documento, importar
- * planilha, revogar chave. Ali travar é proteção, não estorvo, e por isso ele
- * pede uma mensagem dizendo o que está acontecendo.
- *
- * **Nenhuma forma aparece antes de `delay`.** Resposta de 100ms com um piscar
- * de indicador lê como defeito. Abaixo do limiar, nada aparece.
- */
 import { ref, watch } from 'vue';
 import { useDotlogText } from '../i18n/useDotlogText';
 
@@ -27,9 +6,7 @@ const props = withDefaults(
   defineProps<{
     active: boolean;
     variant?: 'bar' | 'inline' | 'overlay';
-    /** Mostrado no `overlay` e no `inline`. Diga o que está acontecendo. */
     message?: string;
-    /** Milissegundos antes de aparecer. */
     delay?: number;
   }>(),
   { variant: 'bar', delay: 220 },
@@ -91,8 +68,6 @@ watch(
   white-space: nowrap;
 }
 
-/* --------------------------------- bar -------------------------------- */
-
 .dl-loader--bar {
   position: fixed;
   inset: 0 0 auto 0;
@@ -108,8 +83,6 @@ watch(
   overflow: hidden;
 }
 
-/* Duas velocidades numa só faixa: a barra acelera e desacelera, que lê como
-   progresso real em vez de um bloco indo e voltando. */
 .dl-loader__indicator {
   display: block;
   height: 100%;
@@ -125,8 +98,6 @@ watch(
   100% { transform: translateX(260%) scaleX(0.6); }
 }
 
-/* ------------------------------- inline ------------------------------- */
-
 .dl-loader--inline {
   display: flex;
   flex-direction: column;
@@ -137,8 +108,6 @@ watch(
   min-height: 160px;
 }
 
-/* ------------------------------- overlay ------------------------------ */
-
 .dl-loader--overlay {
   position: absolute;
   inset: 0;
@@ -148,8 +117,6 @@ watch(
   align-items: center;
   justify-content: center;
   gap: 14px;
-  /* Fundo da superfície com transparência, não preto: o conteúdo continua
-     legível por baixo e a pessoa não perde o contexto. */
   background: rgba(var(--v-theme-surface), 0.82);
   backdrop-filter: blur(2px);
 }
@@ -162,8 +129,6 @@ watch(
   text-align: center;
   max-width: 40ch;
 }
-
-/* ----------------------------- transições ----------------------------- */
 
 .dl-loader-fade-enter-active,
 .dl-loader-fade-leave-active {

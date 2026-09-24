@@ -14,14 +14,6 @@ import {
   type MockProject,
 } from '../mocks';
 
-/**
- * A tabela não sabe nada sobre equipamento nem sobre projeto. As duas primeiras
- * stories mostram o mesmo componente com conjuntos de coluna completamente
- * diferentes, um de cada aplicação.
- */
-
-/* ------------------------- colunas do KRLoc -------------------------- */
-
 const equipmentColumns: Column<MockEquipment>[] = [
   { key: 'code', label: 'Code', width: '120px', mono: true },
   { key: 'name', label: 'Equipment' },
@@ -40,17 +32,10 @@ const equipmentActions: RowAction<MockEquipment>[] = [
     method: 'DELETE',
     path: '/equipment/:id',
     color: 'error',
-    // Indisponível por ESTADO, não por permissão: quem pode continua vendo o
-    // botão, apagado, e entende que é o registro que não permite.
     unavailable: (row) => row.status === 'RETIRED',
   },
 ];
 
-/**
- * A mesma tabela com uma ação principal. Aqui a linha existe para registrar a
- * volta do equipamento, e é isso que o botão redondo diz; abrir e editar
- * continuam discretos.
- */
 const equipmentReturnActions: RowAction<MockEquipment>[] = [
   {
     key: 'return',
@@ -59,14 +44,11 @@ const equipmentReturnActions: RowAction<MockEquipment>[] = [
     method: 'PUT',
     path: '/equipment/:id',
     primary: true,
-    // Só o que está na obra volta. Desabilitado por ESTADO, como o retire.
     unavailable: (row) => row.status !== 'LEASED',
   },
   { key: 'open', label: 'Open', icon: 'mdi-open-in-new', method: 'GET', path: '/equipment/:id' },
   { key: 'edit', label: 'Edit', icon: 'mdi-pencil-outline', method: 'PUT', path: '/equipment/:id' },
 ];
-
-/* -------------------------- colunas do SSO --------------------------- */
 
 const projectColumns: Column<MockProject>[] = [
   { key: 'name', label: 'Project', width: '200px' },
@@ -81,8 +63,6 @@ const projectActions: RowAction<MockProject>[] = [
   { key: 'activate', label: 'Change status', icon: 'mdi-toggle-switch-outline', method: 'PATCH', path: '/project/:id/status' },
   { key: 'remove', label: 'Delete', icon: 'mdi-trash-can-outline', method: 'DELETE', path: '/project/:id', color: 'error' },
 ];
-
-/* ------------------------------ palco -------------------------------- */
 
 const FULL_EQUIPMENT: Permission[] = [
   { path: '/equipment', method: 'GET' },
@@ -104,14 +84,6 @@ const FULL_PROJECT: Permission[] = [
   { path: '/project/:id', method: 'DELETE' },
 ];
 
-/**
- * Mesmo componente, dados e colunas vindos de fora. É o ponto de toda esta
- * story, e é por isso que existe um palco por conjunto: eles não compartilham
- * um único campo.
- *
- * O `as never` no slot é a fronteira onde o genérico da tabela encontra o mapa
- * de situação, que é um `Record` solto. Fora daqui, tudo continua tipado.
- */
 const equipmentStage = (
   permissions: Permission[],
   actions: RowAction<MockEquipment>[] = equipmentActions,
@@ -133,9 +105,6 @@ const equipmentStage = (
           'onUpdate:page': (value: number) => (page.value = value),
         },
         {
-          // A coluna de situação é um slot: a tabela entrega a linha e quem usa
-          // decide como desenhar. É assim que a pastilha entra sem a tabela
-          // conhecer nenhum status.
           'col-status': ({ row }: { row: MockEquipment }) =>
             h(DlStatusChip, { status: row.status, map: equipmentStatus }),
         } as never,
@@ -167,8 +136,6 @@ const projectStage = (permissions: Permission[]) => ({
       );
   },
 });
-/* `DlDataTable` e generico, e componente generico nao casa com `Meta<typeof>`.
-   O `as never` fica so no metadado; as stories seguem tipadas pelos palcos. */
 const meta: Meta = {
   title: 'Data/Table',
   component: DlDataTable as never,

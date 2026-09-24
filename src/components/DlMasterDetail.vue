@@ -1,39 +1,14 @@
 <script setup lang="ts">
-/**
- * Lista e detalhe na mesma tela.
- *
- * **Com largura, os dois lado a lado.** Quem percorre um catálogo clica num
- * item, lê, clica no seguinte. Abrir e fechar uma tela por item faz perder o
- * lugar na lista a cada ida e volta.
- *
- * **Estreito, um de cada vez.** Sem largura para os dois, o detalhe toma o
- * lugar da lista, com um "voltar" no topo. A decisão sai da largura do próprio
- * componente, não da janela: com o menu lateral aberto, a mesma janela sobra
- * menos espaço para o conteúdo.
- *
- * **O detalhe acompanha a rolagem.** Lista longa, detalhe curto: sem fixar, o
- * detalhe sumiria para cima enquanto a pessoa desce procurando o próximo item.
- *
- * **O foco segue o que apareceu, só no estreito.** Lado a lado, o foco fica na
- * lista, para a pessoa continuar pelas setas. Quando o detalhe toma o lugar da
- * lista, o foco vai para ele, e ao voltar retorna ao item de onde saiu, com a
- * rolagem onde estava.
- */
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useDotlogText } from '../i18n/useDotlogText';
 
 const props = withDefaults(
   defineProps<{
-    /** Há algo selecionado: o detalhe aparece no lugar do marcador. */
     detailOpen: boolean;
-    /** A cada valor novo, o conteúdo do detalhe troca com transição. */
     detailKey?: string | number | null;
-    /** Largura do componente, em pixels, abaixo da qual lista e detalhe se revezam. */
     breakpoint?: number;
-    /** Coluna da lista, como trilha de `grid-template-columns`. */
     masterSize?: string;
     backLabel?: string;
-    /** Distância do topo ao fixar o detalhe. O padrão fica abaixo da barra do `DlAppShell`. */
     stickyTop?: number;
   }>(),
   {
@@ -58,7 +33,6 @@ const narrow = ref(false);
 
 let observer: ResizeObserver | undefined;
 
-/* Largura zero é componente escondido, não estreito: mantém o que estava. */
 const measure = (width: number): void => {
   if (width <= 0) return;
 
@@ -88,7 +62,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => observer?.disconnect());
 
-/** Traz o topo do componente para a vista, se ele ficou acima dela. */
 const revealTop = (): void => {
   const top = root.value?.getBoundingClientRect().top ?? 0;
 
@@ -121,7 +94,6 @@ watch(
   },
 );
 
-/* Estreito, trocar de um detalhe para outro (um filho, o pai) começa do topo. */
 watch(
   () => props.detailKey,
   async (key, previous) => {
@@ -181,8 +153,6 @@ watch(
   min-width: 0;
 }
 
-/* Detalhe mais alto que a janela rola por dentro. Sem isso, com a lista ainda
-   mais longa, o fim do detalhe só apareceria no fim da lista. */
 .dl-md:not(.dl-md--narrow) .dl-md__detail {
   position: sticky;
   top: var(--dl-md-sticky);

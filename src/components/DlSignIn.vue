@@ -1,30 +1,4 @@
 <script setup lang="ts">
-/**
- * Tela de entrada do IdP, a única página que toda pessoa do ecossistema vê.
- *
- * ## Só oferece login dentro de um pedido
- *
- * A tela existe para devolver alguém a uma aplicação que pediu. Sem pedido
- * (`state: 'blocked'`) ela não mostra provedor nenhum e explica que o login
- * começa pela aplicação, como a tela de consentimento do Google, que aberta
- * direto também não serve para nada. Um botão ali criaria sessão sem destino.
- *
- * ## Diz onde a pessoa está entrando
- *
- * "to continue to KRLoc". Sem o nome da aplicação a tela seria idêntica para
- * todo o ecossistema, que é justamente o que uma página falsa imita.
- *
- * ## Erro por código, nunca por texto da URL
- *
- * `error` é montado pela aplicação a partir de um código conhecido. Texto
- * livre lido da query string transformaria a página de maior confiança do
- * ecossistema num mural para quem quisesse enganar alguém.
- *
- * ## O botão escolhido mostra que a navegação começou
- *
- * Ir ao provedor leva um instante. Sem retorno a pessoa clica de novo, e o
- * segundo clique abre outra ida ao provedor por cima da primeira.
- */
 import { computed } from 'vue';
 import { splitAround, useDotlogText } from '../i18n/useDotlogText';
 import DlButton from './DlButton.vue';
@@ -33,7 +7,6 @@ import DlSkeleton from './DlSkeleton.vue';
 export interface SignInProvider {
   id: string;
   label: string;
-  /** Ícone `mdi-*`. */
   icon?: string;
 }
 
@@ -44,16 +17,12 @@ export interface SignInError {
 
 withDefaults(
   defineProps<{
-    /** `loading` enquanto consulta o pedido; `blocked` quando não há pedido. */
     state: 'loading' | 'ready' | 'blocked';
-    /** Nome da aplicação que pediu o login. */
     application?: string | null;
     providers?: SignInProvider[];
     error?: SignInError | null;
-    /** Provedor para onde a navegação já começou. */
     pendingProvider?: string | null;
     brand?: string;
-    /** Ícone `mdi-*` ao lado de `brand`. Esta é a tela do IdP: como `brand`, o padrão é o do SSO. */
     logo?: string;
   }>(),
   {
@@ -70,7 +39,6 @@ const emit = defineEmits<{ select: [provider: SignInProvider] }>();
 
 const { t } = useDotlogText();
 
-/* O nome da aplicação vai em negrito, no lugar que cada língua der a ele. */
 const continueTo = computed(() => splitAround((marker) => t('signIn.continueTo', { application: marker })));
 </script>
 
@@ -158,8 +126,6 @@ const continueTo = computed(() => splitAround((marker) => t('signIn.continueTo',
   padding: 24px 16px;
   font-family: var(--dl-font);
   color: var(--dl-on-surface);
-  /* Dois halos discretos, na cor do tema. Dão profundidade ao fundo sem
-     competir com o cartão, e se invertem sozinhos no tema escuro. */
   background:
     radial-gradient(56rem 36rem at 12% -12%, rgba(var(--v-theme-primary), 0.1), transparent 62%),
     radial-gradient(44rem 30rem at 108% 112%, rgba(var(--v-theme-info), 0.08), transparent 60%),

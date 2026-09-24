@@ -1,13 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { darkColors, lightColors, radius, spacing, typography } from './tokens';
 
-/**
- * A primeira página do Storybook é a paleta, de propósito. Antes de olhar
- * componente, quem chega precisa ver de onde vêm as cores e que elas já foram
- * conferidas contra a WCAG.
- */
-
-const contraste = (a: string, b: string): number => {
+const contrast = (a: string, b: string): number => {
   const lum = (hex: string) => {
     const c = hex.replace('#', '');
     const [r, g, bl] = [0, 2, 4].map((i) => parseInt(c.slice(i, i + 2), 16) / 255);
@@ -59,7 +53,7 @@ export const Palette: Story = {
       const dark = globals.theme === 'dark';
       const base = dark ? darkColors : lightColors;
 
-      return { items: samples(dark), base, dark, contraste, spacing, radius, typography };
+      return { items: samples(dark), base, dark, contrast, spacing, radius, typography };
     },
     template: `
       <section :style="{ fontFamily: typography.fontFamily }">
@@ -116,7 +110,7 @@ export const Contrast: Story = {
         { pair: 'Error on surface', fg: c.error, bg: c.surface, min: 3 },
         { pair: 'Success on surface', fg: c.success, bg: c.surface, min: 3 },
         { pair: 'Warning on surface', fg: c.warning, bg: c.surface, min: 3 },
-      ].map((p) => ({ ...p, ratio: contraste(p.fg, p.bg) }));
+      ].map((p) => ({ ...p, ratio: contrast(p.fg, p.bg) }));
 
       return { pairs, base: c, spacing, radius, typography };
     },

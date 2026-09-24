@@ -1,23 +1,4 @@
 <script setup lang="ts">
-/**
- * Casca das aplicações: menu lateral, barra superior e área de conteúdo.
- *
- * **O conteúdo tem largura máxima.** Tabela esticada num monitor de 2560px
- * afasta o nome do registro das ações dele por um palmo. Acima de `maxWidth`
- * sobra margem, não linha comprida.
- *
- * **Pular para o conteúdo vem antes do menu.** Quem navega por teclado não
- * deveria atravessar todos os itens do menu a cada troca de tela. O link só
- * aparece ao receber foco.
- *
- * **A barra de carregamento é da casca**, não de cada tela. Troca de rota é
- * assunto da aplicação inteira, e uma barra por tela piscaria em lugares
- * diferentes a cada navegação.
- *
- * **O hambúrguer mora na barra superior.** No telefone o menu está fechado, e o
- * botão que o abre precisa estar sempre à vista, qualquer que seja a tela. Quem
- * usa esta casca passa `with-menu="false"` ao `DlPageHeader`.
- */
 import { useDisplay } from 'vuetify';
 import { useDotlogText } from '../i18n/useDotlogText';
 import DlLoader from './DlLoader.vue';
@@ -26,20 +7,13 @@ import DlNavDrawer, { type NavGroup, type NavItem } from './DlNavDrawer.vue';
 withDefaults(
   defineProps<{
     groups: NavGroup[];
-    /** `key` do item ativo no menu. */
     active?: string;
-    /** Nome da aplicação. */
     title: string;
     subtitle?: string;
-    /** Marca da aplicação no topo do menu: o ícone da aba do navegador. Ver `DlNavDrawer`. */
     logo?: string;
-    /** Menu aberto no telefone. Use `v-model:open`. */
     open?: boolean;
-    /** Trilho só de ícone no desktop. Use `v-model:collapsed`. */
     collapsed?: boolean;
-    /** Liga a barra de carregamento do topo. */
     loading?: boolean;
-    /** Largura máxima do conteúdo. */
     maxWidth?: number | string;
   }>(),
   { open: false, collapsed: false, loading: false, maxWidth: 1280 },

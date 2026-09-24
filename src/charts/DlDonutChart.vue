@@ -1,21 +1,4 @@
 <script setup lang="ts">
-/**
- * Rosca para composição: quanto cada parte representa do todo.
- *
- * **Rosca, não pizza cheia.** O furo no meio devolve um lugar para o número que
- * importa de verdade, o total, e ainda reduz a área que o olho compara mal.
- *
- * **Poucas fatias.** Acima de cinco ou seis, ângulo vizinho vira indistinguível
- * e a resposta certa é barra. O componente não impede, mas a paleta para em
- * oito e o método manda agrupar em "Other" antes disso.
- *
- * **Percentual escrito, não deduzido.** Comparar ângulo é a coisa que o olho
- * humano faz pior; por isso cada fatia tem o número ao lado na legenda, e a
- * fatia sob o cursor mostra o valor no centro.
- *
- * Especificações de marca: 2px de folga da superfície entre fatias, para
- * separar sem borda; anel fino; sem sombra.
- */
 import { computed, ref } from 'vue';
 import { useDotlogText } from '../i18n/useDotlogText';
 
@@ -29,7 +12,6 @@ const props = withDefaults(
   defineProps<{
     data: DonutSlice[];
     format?: (value: number) => string;
-    /** Rótulo sob o total, no centro. */
     totalLabel?: string;
     size?: number;
     thickness?: number;
@@ -51,7 +33,6 @@ const hovered = ref<number | null>(null);
 const radius = computed(() => (props.size - props.thickness) / 2);
 const circumference = computed(() => 2 * Math.PI * radius.value);
 
-/** Folga de 2px entre fatias, feita com o tracejado do próprio anel. */
 const GAP_PX = 2;
 
 const segments = computed(() => {
@@ -124,7 +105,6 @@ const centreLabel = computed(() =>
       </g>
     </svg>
 
-    <!-- O número no meio: o total, ou a fatia sob o cursor. -->
     <div class="dl-donut__centre" aria-hidden="true">
       <strong class="dl-donut__value">{{ centreValue }}</strong>
       <span class="dl-donut__label">{{ centreLabel }}</span>
@@ -155,7 +135,6 @@ const centreLabel = computed(() =>
     stroke-width var(--dl-motion-fast, 120ms) var(--dl-easing),
     opacity var(--dl-motion-fast, 120ms) var(--dl-easing);
   cursor: pointer;
-  /* A folga entre fatias é a própria superfície aparecendo, sem borda. */
   stroke-linecap: butt;
   animation: dl-donut-draw var(--dl-motion-slow, 320ms) var(--dl-easing);
 }

@@ -1,34 +1,11 @@
 <script setup lang="ts" generic="T">
-/**
- * Dropdown do ecossistema.
- *
- * Três decisões que valem explicar:
- *
- * - **Busca a partir de oito opções.** Abaixo disso o campo de busca atrapalha
- *   mais do que ajuda; acima, rolar uma lista de cliente ou de equipamento é
- *   pior que digitar. O limite pode ser forçado com `searchable`.
- * - **Carregando é estado, não ausência.** Lista de opção quase sempre vem de
- *   requisição. Sem `loading`, o dropdown vazio parece "não há nada", que é uma
- *   informação errada e leva a pessoa a cadastrar duplicado.
- * - **Rótulo fora do campo**, igual ao campo de texto, pelo mesmo motivo:
- *   rótulo flutuante some quando preenchido e deixa o valor sem contexto.
- */
 import { computed } from 'vue';
-// Import explícito, e não o nome em texto: `<component :is="'VSelect'">` só
-// resolve com o Vuetify registrado globalmente, e a aplicação que usa o
-// auto-import do `vite-plugin-vuetify` não registra o que não aparece como tag.
 import { VAutocomplete, VSelect } from 'vuetify/components';
 import { useDotlogText } from '../i18n/useDotlogText';
 
 const props = withDefaults(
   defineProps<{
-    /**
-     * O valor, ou a lista com `multiple`. O tipo segue `itemValue`, que o
-     * TypeScript não acompanha: com opções `{ title, value }` o valor é o
-     * `value`, não o objeto. Declarar `T` aqui seria afirmar o que não é.
-     */
     modelValue?: unknown;
-    /** Lista de opções. Objeto usa `itemTitle` e `itemValue`. */
     options: readonly T[];
     label?: string;
     hint?: string;
@@ -39,9 +16,7 @@ const props = withDefaults(
     multiple?: boolean;
     required?: boolean;
     disabled?: boolean;
-    /** Mostra indicador e trava o campo enquanto as opções chegam. */
     loading?: boolean;
-    /** Força a busca. Sem valor, liga sozinha a partir de oito opções. */
     searchable?: boolean;
     clearable?: boolean;
     icon?: string;
@@ -64,7 +39,6 @@ const value = computed({
   set: (v) => emit('update:modelValue', v),
 });
 
-/** Ver a nota sobre o limite de oito no topo do arquivo. */
 const withSearch = computed(() => props.searchable ?? props.options.length >= 8);
 
 const component = computed(() => (withSearch.value ? VAutocomplete : VSelect));

@@ -1,32 +1,4 @@
 <script setup lang="ts">
-/**
- * Navegação lateral, a mesma nas duas aplicações.
- *
- * ## O menu vem do backend
- *
- * O componente não sabe o que é "equipamento" nem "projeto". Ele recebe grupos
- * e itens e desenha. É isso que permite o KRLoc ter as abas dele e o SSO ter as
- * dele, com o mesmo código: quem responde o manifesto é cada backend.
- *
- * ## O que a pessoa não pode, ela não vê
- *
- * Item com `permission` declarada só aparece se `usePermissions` deixar. Grupo
- * que ficou sem nenhum item some junto, com o título: cabeçalho de seção vazia
- * é pior que seção ausente, porque promete algo que não vem.
- *
- * ## Três formas, um componente
- *
- * No desktop é gaveta fixa; recolhida vira trilho só de ícone, para devolver
- * largura à tabela. No telefone é gaveta temporária, aberta pelo botão de
- * hambúrguer e fechada ao escolher, porque ela cobre o conteúdo e ninguém quer
- * fechar duas vezes.
- *
- * ## A marca é da aplicação
- *
- * O ícone do topo chega por `logo`, o mesmo da aba do navegador. Sem ele, o
- * topo mostra um ícone neutro: um padrão com a marca de uma aplicação vestiria
- * todas as outras com ela, e foi assim que o KRLoc abriu com o escudo do SSO.
- */
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 import { usePermissions } from '../access/usePermissions';
@@ -35,40 +7,26 @@ import { useDotlogText } from '../i18n/useDotlogText';
 export interface NavItem {
   key: string;
   label: string;
-  /** Ícone `mdi-*`. No trilho recolhido é a única coisa visível. */
   icon: string;
-  /** Rota do front. Quem navega é a aplicação, pelo evento `navigate`. */
   to: string;
-  /** Método e caminho da API que liberam este item. Sem isto, sempre aparece. */
   permission?: { method: string; path: string };
-  /** Contador, como número de pendências. */
   badge?: string | number;
 }
 
 export interface NavGroup {
   key: string;
-  /** Sem título, o grupo vira apenas um bloco separado por linha. */
   title?: string;
   items: NavItem[];
 }
 
 const props = withDefaults(
   defineProps<{
-    /** Aberta no telefone, recolhível no desktop. Use `v-model:open`. */
     open?: boolean;
-    /** Trilho só de ícone. Só vale no desktop. */
     collapsed?: boolean;
     groups: NavGroup[];
-    /** `key` do item ativo. */
     active?: string;
-    /** Nome da aplicação, no topo. */
     title?: string;
     subtitle?: string;
-    /**
-     * Marca da aplicação, ao lado do nome, e a única coisa do topo no trilho
-     * recolhido. Ícone `mdi-*`, o mesmo da aba do navegador; marca que não está
-     * no MDI entra como `svg:` seguido do caminho do desenho.
-     */
     logo?: string;
   }>(),
   { open: false, collapsed: false, logo: 'mdi-application-outline' },
@@ -84,7 +42,6 @@ const { can } = usePermissions();
 const { mdAndDown } = useDisplay();
 const { t } = useDotlogText();
 
-/** Grupos e itens que esta pessoa alcança. Grupo vazio não sobra. */
 const visibleGroups = computed(() =>
   props.groups
     .map((group) => ({
@@ -101,8 +58,6 @@ const rail = computed(() => props.collapsed && !mdAndDown.value);
 const choose = (item: NavItem): void => {
   emit('navigate', item);
 
-  // No telefone a gaveta cobre o conteúdo: escolher e continuar vendo o menu
-  // obrigaria a fechar de novo.
   if (mdAndDown.value) emit('update:open', false);
 };
 </script>

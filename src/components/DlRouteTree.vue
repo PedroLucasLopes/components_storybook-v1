@@ -1,46 +1,4 @@
 <script setup lang="ts" generic="Entry extends RouteTreeEntry">
-/**
- * Catálogo de rotas como árvore: o caminho base é o pai, e o que começa com
- * ele mora dentro.
- *
- * ## Por que árvore, e não tabela com filtro
- *
- * Tabela resolve dez rotas. Com trezentas, a pessoa não procura um texto, ela
- * procura um lugar: "o que existe debaixo de `/elease`". A árvore responde isso
- * sem digitar, e o filtro continua existindo para quem já sabe o nome.
- *
- * ## Tudo é clicável
- *
- * Clicar na linha seleciona, e abre o nó se ele estava fechado. A seta só abre
- * e fecha, sem mudar a seleção, para quem quer espiar o que tem dentro. Grupo
- * também seleciona: ele não é rota, mas o detalhe dele diz o que junta. Com
- * `selectable` desligado, a linha inteira só abre e fecha.
- *
- * ## Teclado como numa árvore de arquivos
- *
- * O padrão da WAI-ARIA para `tree`: setas sobem e descem, direita abre ou
- * entra, esquerda fecha ou volta ao pai, Home e End vão às pontas, Enter e
- * Espaço ativam. Só um item fica no Tab, então Tab sai da árvore em vez de
- * atravessar trezentas linhas.
- *
- * ## Filtro mostra o caminho até o resultado
- *
- * Resultado solto não diz onde está. Os ancestrais ficam, apagados, e tudo o
- * que leva a um resultado abre sozinho enquanto o filtro existir. Ao limpar, a
- * árvore volta a abrir o que a pessoa tinha aberto.
- *
- * ## Só abrir e fechar anima
- *
- * As linhas de um ramo entram descendo do pai e saem recolhendo nele. Filtro,
- * expandir tudo e dado novo trocam seco: dezenas de linhas saindo juntas se
- * amontoam antes de sumir, e movimento que não ajuda a acompanhar é ruído.
- *
- * ## Linhas planas, com nível declarado
- *
- * A árvore é desenhada como lista plana com `aria-level`, `aria-setsize` e
- * `aria-posinset`, que a especificação aceita. É o que deixa as linhas
- * entrarem e saírem com animação sem aninhar um grupo dentro do outro.
- */
 import { computed, nextTick, ref, watch } from 'vue';
 import { httpMethodStatus } from '../data/httpMethods';
 import { useDotlogText } from '../i18n/useDotlogText';
@@ -58,24 +16,15 @@ import DlStatusChip, { type StatusDefinition } from './DlStatusChip.vue';
 
 const props = withDefaults(
   defineProps<{
-    /** Rotas no formato plano do catálogo. Ignorado quando há `nodes`. */
     routes?: readonly Entry[];
-    /** Árvore já montada, para desenhar um pedaço dela: o que fica abaixo de um nó. */
     nodes?: readonly RouteTreeNode<Entry>[];
-    /** Trecho do caminho a procurar. */
     query?: string;
-    /** Métodos a mostrar. Vazio mostra todos. */
     methods?: readonly string[];
-    /** Clique seleciona. Desligado, a linha só abre e fecha. */
     selectable?: boolean;
-    /** Esconde as pastilhas de método, para quem desenha as próprias em `node-end`. */
     hideMethods?: boolean;
     loading?: boolean;
-    /** Nome da árvore para o leitor de tela. */
     label?: string;
-    /** Aparência dos métodos. */
     methodMap?: Record<string, StatusDefinition>;
-    /** Até esta quantidade de caminhos a árvore nasce aberta; acima, fechada. */
     openLimit?: number;
     emptyTitle?: string;
     emptyDescription?: string;
@@ -98,10 +47,8 @@ const props = withDefaults(
 
 const { t } = useDotlogText();
 
-/** Chave do nó selecionado, que é o caminho normalizado. */
 const selected = defineModel<string | null>('selected', { default: null });
 
-/** Chaves dos nós abertos. Sem `v-model`, a árvore guarda sozinha. */
 const expanded = defineModel<string[] | undefined>('expanded', { default: undefined });
 
 const emit = defineEmits<{ select: [node: RouteTreeNode<Entry>] }>();
@@ -124,12 +71,8 @@ const filtered = computed(() =>
 
 const visibleTree = computed(() => filtered.value?.nodes ?? tree.value);
 
-/** Liga a transição das linhas. Só um abrir ou fechar pedido pela pessoa liga. */
 const animated = ref(false);
 
-/* Até `openLimit` caminhos a árvore nasce aberta: cabe na tela e mostra a
-   hierarquia de uma vez. Acima disso nasce fechada, e cada ramo abre quando
-   pedem. Decide uma vez só, para uma rota nova não fechar tudo de repente. */
 watch(
   tree,
   (nodes) => {
@@ -142,7 +85,6 @@ watch(
   { immediate: true },
 );
 
-/* Durante o filtro tudo abre; o que a pessoa fechar ali fica só nesta busca. */
 const filterClosed = ref<Set<string>>(new Set());
 
 watch(
@@ -164,11 +106,9 @@ interface Row {
   setSize: number;
   position: number;
   parent: string | null;
-  /** Por nível acima do pai: se a linha vertical daquele ancestral continua. */
   guides: boolean[];
   last: boolean;
   open: boolean;
-  /** Só está aqui como caminho até um resultado do filtro. */
   context: boolean;
   warnings: string[];
 }
@@ -232,8 +172,6 @@ const describe = (row: Row): string => {
   return [...parts, ...row.warnings].join(', ');
 };
 
-/* ------------------------------ foco ------------------------------ */
-
 const focusKey = ref<string | null>(null);
 const elements = new Map<string, HTMLElement>();
 
@@ -242,7 +180,6 @@ const bindRow = (key: string, element: unknown): void => {
   else elements.delete(key);
 };
 
-/** Um item só no Tab: o que teve foco, senão o selecionado, senão o primeiro. */
 const tabKey = computed(() => {
   const keys = new Set(rows.value.map((row) => row.node.key));
 
@@ -256,8 +193,6 @@ const focusRow = (key: string): void => {
   focusKey.value = key;
   void nextTick(() => elements.get(key)?.focus());
 };
-
-/* ----------------------------- ações ------------------------------ */
 
 const toggle = (node: RouteTreeNode<Entry>, open = !isOpen(node.key)): void => {
   if (node.children.length === 0) return;
@@ -297,7 +232,6 @@ const activate = (row: Row): void => {
 };
 
 const onKeydown = (event: KeyboardEvent, row: Row): void => {
-  // Controle dentro da linha, como a caixa de marcar, cuida do próprio teclado.
   if (event.target !== event.currentTarget) return;
 
   const list = rows.value;
@@ -340,8 +274,6 @@ const onKeydown = (event: KeyboardEvent, row: Row): void => {
   event.preventDefault();
 };
 
-/* Seleção vinda de fora, como link direto ou clique no detalhe: os ancestrais
-   abrem, senão a linha selecionada ficaria escondida dentro de um ramo fechado. */
 watch(
   [selected, tree],
   ([key, nodes]) => {
@@ -358,8 +290,6 @@ watch(
   { immediate: true },
 );
 
-/* Só quando a seleção muda, não quando a árvore relê: uma gravação no detalhe
-   não pode arrastar a página de volta para a linha. */
 watch(
   selected,
   (key) => {
@@ -415,8 +345,6 @@ defineExpose({
 
     <p v-else-if="rows.length === 0" class="dl-rtree__nomatch">{{ t('routeTree.noMatch') }}</p>
 
-    <!-- Fora do abrir e fechar, `css` desligado troca na hora: nem espera o
-         próximo quadro, que numa aba em segundo plano não chega. -->
     <TransitionGroup
       v-else
       tag="div"
@@ -559,12 +487,10 @@ defineExpose({
   background: var(--dl-surface-variant);
 }
 
-/* Sem seleção e sem filhos, o clique não faz nada: o cursor não promete. */
 .dl-rtree__row--inert {
   cursor: default;
 }
 
-/* Foco visível é requisito de navegação por teclado, não enfeite. */
 .dl-rtree__row:focus-visible {
   box-shadow: inset 0 0 0 2px var(--dl-primary);
 }
@@ -574,7 +500,6 @@ defineExpose({
   background: rgba(var(--v-theme-primary), 0.1);
 }
 
-/* Cor não vai sozinha: a barra lateral marca a seleção para quem não distingue o fundo. */
 .dl-rtree__row--selected::before {
   content: '';
   position: absolute;
@@ -601,8 +526,6 @@ defineExpose({
   border-left: 1px solid var(--dl-outline);
 }
 
-/* A dobra fica na altura da primeira linha, não no meio da linha inteira:
-   caminho longo quebra em duas no telefone, e a seta continua na primeira. */
 .dl-rtree__guide--last::before {
   bottom: auto;
   height: 20px;
@@ -776,7 +699,6 @@ button.dl-rtree__toggle:hover {
   color: var(--dl-on-surface-muted);
 }
 
-/* Linha entra descendo do pai; a que sai recolhe nele, e as de baixo deslizam. */
 .dl-rtree-row-enter-active,
 .dl-rtree-row-leave-active {
   transition:
@@ -812,7 +734,6 @@ button.dl-rtree__toggle:hover {
   }
 }
 
-/* O estado fica, o movimento sai. */
 @media (prefers-reduced-motion: reduce) {
   .dl-rtree__row,
   .dl-rtree__chevron,

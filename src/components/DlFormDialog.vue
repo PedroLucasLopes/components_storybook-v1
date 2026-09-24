@@ -1,27 +1,4 @@
 <script setup lang="ts">
-/**
- * Modal de cadastro e de edição. É o mesmo componente para os dois: muda o
- * título, o rótulo do botão e o que já vem preenchido, não a estrutura.
- *
- * ## Erro do servidor aparece DENTRO do modal
- *
- * Falha ao salvar não vira toast. O toast vive no canto da tela, e a pessoa
- * está olhando para o formulário; ela precisa ver a mensagem ao lado do que
- * causou o problema, e o modal não pode fechar, senão o que ela digitou some.
- * Toast fica para o que já terminou: "equipamento cadastrado".
- *
- * ## Não fecha por engano
- *
- * Com `dirty`, clicar fora ou apertar Esc pede confirmação. Formulário longo
- * perdido por um clique distraído é o tipo de coisa que faz a pessoa desconfiar
- * do sistema inteiro.
- *
- * ## Tela cheia no telefone
- *
- * Abaixo de 600px o modal ocupa a tela. Caixa flutuante com formulário em
- * telefone deixa o teclado cobrindo metade dos campos e o rodapé fora de
- * alcance.
- */
 import { computed, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
 import { useDotlogText } from '../i18n/useDotlogText';
@@ -32,16 +9,11 @@ const props = withDefaults(
     mode?: 'create' | 'edit';
     title: string;
     description?: string;
-    /** Rótulo do botão principal. Sem valor, sai do `mode`. */
     submitLabel?: string;
     cancelLabel?: string;
-    /** Mensagem de falha vinda do servidor. Fica no topo do corpo. */
     error?: string | null;
-    /** Trava os botões e mostra o progresso enquanto salva. */
     submitting?: boolean;
-    /** Há alteração não salva. Liga a confirmação de fechamento. */
     dirty?: boolean;
-    /** Largura máxima no desktop. */
     width?: number | string;
   }>(),
   {
@@ -63,8 +35,6 @@ const { smAndDown } = useDisplay();
 
 const confirmingClose = ref(false);
 
-// Some com a confirmação pendente ao reabrir: herdar o estado da vez anterior
-// faria o modal abrir já perguntando se pode fechar.
 watch(
   () => props.modelValue,
   (open) => {
@@ -121,8 +91,6 @@ const close = (): void => {
         />
       </header>
 
-      <!-- Progresso no topo, não overlay: os campos seguem visíveis enquanto
-           salva, e a pessoa vê o que está sendo enviado. -->
       <VProgressLinear
         v-if="submitting"
         color="primary"
@@ -156,7 +124,6 @@ const close = (): void => {
       </footer>
     </VCard>
 
-    <!-- Guarda de saída. Empilha sobre o formulário, que continua intacto. -->
     <VDialog v-model="confirmingClose" :max-width="400" persistent>
       <VCard rounded="lg" class="dl-form-dialog__guard">
         <h3 class="dl-form-dialog__guard-title">{{ t('form.discardTitle') }}</h3>
@@ -266,8 +233,6 @@ const close = (): void => {
   margin-top: 18px;
 }
 
-/* Em telefone o rodapé fica colado embaixo e os botões dividem a largura:
-   alvo de toque maior e nada espremido no canto. */
 @media (max-width: 599px) {
   .dl-form-dialog__foot {
     padding-bottom: max(14px, env(safe-area-inset-bottom));

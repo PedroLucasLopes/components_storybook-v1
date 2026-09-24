@@ -4,31 +4,6 @@ import { en, es, pt } from 'vuetify/locale';
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
 import { matchLocale } from './languages';
 
-/**
- * Uma língua só para a aplicação, o Vuetify e a biblioteca.
- *
- * A aplicação cria o vue-i18n dela com os próprios JSON e passa aqui:
- *
- * ```ts
- * createVuetify({ ...vuetifyOptions, locale: createDotlogLocale({ i18n, useI18n }) })
- * ```
- *
- * Três coisas acontecem:
- *
- * - **O Vuetify passa a traduzir pelo vue-i18n**, com o adaptador oficial dele.
- *   A língua corrente é uma só: trocar em `i18n.global.locale`, ou no
- *   `DlUserMenu`, troca tudo.
- * - **Os textos internos do Vuetify entram em cada língua registrada**, em
- *   `$vuetify`, pela mesma língua ou variante. Sem eles o vue-i18n mostraria a
- *   chave crua ("$vuetify.noDataText") num seletor vazio. O que a aplicação já
- *   tiver declarado em `$vuetify` no próprio JSON prevalece.
- * - **`<html lang>` acompanha a língua**, para leitor de tela pronunciar certo
- *   e o navegador não oferecer traduzir uma página que já está na língua.
- *
- * `useI18n` vem da aplicação, e não daqui, pelo mesmo motivo de Vue e Vuetify
- * serem `peerDependencies`: duas cópias do vue-i18n não se enxergam.
- */
-
 type VueI18nParams = Parameters<typeof createVueI18nAdapter>[0];
 
 type Tree = Record<string, unknown>;
@@ -37,7 +12,6 @@ const VUETIFY_MESSAGES: Readonly<Record<string, Tree>> = { en, es, pt };
 
 const isTree = (value: unknown): value is Tree => !!value && typeof value === 'object' && !Array.isArray(value);
 
-/** Mescla em profundidade; o segundo lado ganha onde os dois têm valor. */
 const merge = (base: Tree, override: unknown): Tree => {
   if (!isTree(override)) return base;
 

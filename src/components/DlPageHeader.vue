@@ -1,14 +1,4 @@
 <script setup lang="ts">
-/**
- * Cabeçalho de tela: onde estou, e o que posso fazer aqui.
- *
- * **A ação primária sai do DOM quando a pessoa não pode exercê-la.** Mesma
- * regra da tabela: "Cadastrar equipamento" não aparece apagado para quem só tem
- * `GET`, porque apagado promete que um dia dá.
- *
- * **O hambúrguer mora aqui**, e não na gaveta. No telefone a gaveta está
- * fechada, então o botão que a abre precisa estar no que está na tela.
- */
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
 import { usePermissions } from '../access/usePermissions';
@@ -29,9 +19,7 @@ const props = withDefaults(
     title: string;
     description?: string;
     actions?: HeaderAction[];
-    /** Trilha de navegação. O último item não é clicável. */
     breadcrumbs?: { label: string; to?: string }[];
-    /** Mostra o botão de hambúrguer no telefone. */
     withMenu?: boolean;
   }>(),
   { actions: () => [], breadcrumbs: () => [], withMenu: true },
@@ -180,8 +168,6 @@ const visibleActions = computed(() =>
   flex-wrap: wrap;
 }
 
-/* Em telefone a ação ocupa a largura toda: alvo de toque maior e nada de botão
-   espremido no canto. */
 @media (max-width: 599px) {
   .dl-header__actions {
     width: 100%;

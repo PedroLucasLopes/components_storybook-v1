@@ -1,18 +1,4 @@
 <script setup lang="ts">
-/**
- * Confirmação de ação destrutiva.
- *
- * **O botão diz o que faz.** "Confirmar" e "OK" obrigam a reler a pergunta para
- * saber o que vai acontecer. O rótulo padrão é o verbo da ação: "Retirar
- * equipamento", "Revogar chave".
- *
- * **Digitar para confirmar, quando o estrago é grande.** Com `requireText`, a
- * pessoa precisa escrever o nome do registro. É atrito de propósito, reservado
- * para o que não tem volta: revogar chave de cliente, apagar projeto.
- *
- * **O botão seguro vem primeiro na ordem de foco.** Quem quer destruir precisa
- * se mover até lá, e não acertar por reflexo.
- */
 import { computed, ref, watch } from 'vue';
 import { splitAround, useDotlogText } from '../i18n/useDotlogText';
 
@@ -21,18 +7,11 @@ const props = withDefaults(
     modelValue: boolean;
     title: string;
     message?: string;
-    /** Sem valor, "Confirmar" na língua corrente. Prefira o verbo da ação. */
     confirmLabel?: string;
     cancelLabel?: string;
-    /** Vermelho e ícone de alerta. Ligue para o que apaga ou revoga. */
     destructive?: boolean;
-    /** Exige digitar este texto para liberar a confirmação. */
     requireText?: string | null;
     processing?: boolean;
-    /**
-     * Falha vinda do servidor. Aparece aqui dentro, e o modal não fecha: a
-     * pessoa precisa ler por que não deu, ao lado do que tentou fazer.
-     */
     error?: string | null;
   }>(),
   {
@@ -44,7 +23,6 @@ const props = withDefaults(
 
 const { t } = useDotlogText();
 
-/* O texto a digitar vai em `<code>`, no lugar que cada língua der a ele. */
 const gate = computed(() => splitAround((marker) => t('confirm.typeToConfirm', { text: marker })));
 
 const emit = defineEmits<{
@@ -55,8 +33,6 @@ const emit = defineEmits<{
 
 const typed = ref('');
 
-// Limpa ao abrir: reaproveitar o texto da vez anterior liberaria a confirmação
-// sem a pessoa ter lido de novo.
 watch(
   () => props.modelValue,
   (isOpen) => {

@@ -1,27 +1,10 @@
 <script setup lang="ts">
-/**
- * Um caminho de rota, lido por partes.
- *
- * **O trecho herdado sai apagado.** Dentro da árvore, `/equipment/:id/create`
- * repete `/equipment/:id`, que está logo acima. O caminho inteiro continua na
- * tela, porque é ele que se copia e se procura, mas o olho vai direto ao que é
- * novo: `/create`.
- *
- * **Parâmetro tem cor própria.** `:id` é o pedaço que muda a cada chamada, e é
- * o que diferencia `/equipment/:id` de `/equipment/upload` numa varrida.
- *
- * **O trecho procurado vem marcado** com `<mark>`, em qualquer ponto, mesmo
- * atravessando uma barra. A marca e as cores são calculadas por caractere e
- * depois agrupadas, então uma não quebra a outra.
- */
 import { computed } from 'vue';
 
 const props = withDefaults(
   defineProps<{
     path: string;
-    /** Caminho do nível acima. O começo igual a ele sai apagado. */
     base?: string;
-    /** Texto a marcar, sem diferença de maiúscula. */
     highlight?: string;
     size?: 'small' | 'default' | 'large';
   }>(),
@@ -123,7 +106,6 @@ const parts = computed<Part[]>(() => {
   color: var(--dl-primary);
 }
 
-/* Herdado vence parâmetro: `:id` do pai já foi lido uma linha acima. */
 .dl-rpath__inherited,
 .dl-rpath__inherited.dl-rpath__param {
   color: var(--dl-on-surface-muted);

@@ -1,20 +1,4 @@
 <script setup lang="ts">
-/**
- * Mostra um segredo uma única vez: chave privada, token de instalação.
- *
- * **Mascarado até a pessoa pedir.** Tela compartilhada, reunião gravada,
- * alguém atrás da cadeira. Revelar é um gesto, não o padrão.
- *
- * **Copiar não obriga a revelar.** O caso comum é colar direto no cofre de
- * segredos, sem o valor passar pela tela.
- *
- * **Fechar exige confirmar que guardou.** O segredo não volta: quem o gerou não
- * o armazena. Clique fora, Esc ou um "OK" por reflexo não podem descartar a
- * única cópia.
- *
- * **O componente não guarda nada.** Ao fechar ele emite `closed`, e quem abriu
- * deve esquecer o valor. Nada vai para `localStorage`, log ou URL.
- */
 import { computed, ref, useId, watch } from 'vue';
 import { useDotlogText } from '../i18n/useDotlogText';
 import DlButton from './DlButton.vue';
@@ -23,10 +7,8 @@ const props = defineProps<{
   modelValue: boolean;
   title: string;
   secret: string;
-  /** Nome do segredo, acima do valor. Sem valor, "Segredo" na língua corrente. */
   label?: string;
   description?: string;
-  /** O que acontece se o segredo vazar ou se perder. */
   warning?: string;
   acknowledgeLabel?: string;
 }>();
@@ -44,8 +26,6 @@ const copied = ref(false);
 
 let timer: ReturnType<typeof setTimeout> | undefined;
 
-// Toda abertura começa mascarada e sem confirmação: herdar o "já guardei" da
-// vez anterior liberaria o fechamento de um segredo novo sem a pessoa ler.
 watch(
   () => props.modelValue,
   (open) => {
@@ -57,7 +37,6 @@ watch(
   },
 );
 
-/** Começo e fim visíveis, para conferir que é o segredo certo sem expô-lo. */
 const masked = computed(() => {
   const value = props.secret;
 
@@ -73,7 +52,6 @@ const copy = async (): Promise<void> => {
     clearTimeout(timer);
     timer = setTimeout(() => (copied.value = false), 1600);
   } catch {
-    /* Sem área de transferência a pessoa revela e seleciona à mão. */
   }
 };
 

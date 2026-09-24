@@ -1,22 +1,10 @@
 <script setup lang="ts">
-/**
- * Estado vazio, de erro ou de bloqueio, com a mesma forma em toda tela.
- *
- * **Diz o que aconteceu e o que fazer.** Um "Nada aqui" sozinho deixa a pessoa
- * sem saber se falhou, se não há dado ou se ela não pode ver. O título traz o
- * fato, a descrição traz a saída, e a ação vem no slot.
- *
- * **O tom muda o ícone, não a página.** Tela inteira vermelha lê como alarme, e
- * falta de permissão não é emergência. A cor fica restrita ao selo do ícone.
- */
 withDefaults(
   defineProps<{
     title: string;
     description?: string;
-    /** Ícone `mdi-*`. */
     icon?: string;
     tone?: 'neutral' | 'info' | 'warning' | 'error' | 'success';
-    /** Menos respiro, para dentro de cartão ou de painel. */
     compact?: boolean;
   }>(),
   { icon: 'mdi-tray-remove', tone: 'neutral', compact: false },
@@ -47,7 +35,6 @@ withDefaults(
   color: var(--dl-on-surface);
   animation: dl-empty-in var(--dl-motion-slow, 320ms) var(--dl-easing) both;
 
-  /* Cada tom repassa a cor do tema como `r,g,b`, e o selo compõe as camadas. */
   --dl-empty-rgb: var(--v-theme-on-surface-variant);
 }
 

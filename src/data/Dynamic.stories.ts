@@ -9,11 +9,6 @@ import { inferColumns } from './inferColumns';
 import { deriveNavGroups } from './deriveNav';
 import { equipmentStatus } from '../mocks';
 
-/**
- * Nenhuma coluna declarada, nenhum item de menu escrito. Tudo sai da resposta
- * da API e da lista de rotas que o SSO já guarda.
- */
-
 const meta: Meta = {
   title: 'Dynamic/From the API',
   parameters: {
@@ -34,8 +29,6 @@ export default meta;
 
 type Story = StoryObj;
 
-/* ------------- respostas cruas, como o backend devolveria ------------- */
-
 const krlocResponse = [
   {
     id: '9f1c2a4e-1f77-4b6e-9c0a-2b3d4e5f6a71',
@@ -46,7 +39,6 @@ const krlocResponse = [
     p_weekly: 480,
     available: true,
     createdAt: '2026-03-04T11:20:00.000Z',
-    // Objeto aninhado: a inferência ignora, porque não cabe numa célula.
     lessee: { id: 'x1', name: 'A0 Construction' },
   },
   {
@@ -101,7 +93,6 @@ const ssoResponse = [
   },
 ];
 
-/** As rotas que o SSO devolve em `GET /auth/me`, sem nenhum tratamento. */
 const krlocRoutes: Permission[] = [
   { path: '/equipment', method: 'GET' },
   { path: '/equipment', method: 'POST' },
@@ -120,8 +111,6 @@ const krlocRoutes: Permission[] = [
   { path: '/generate/contract/:id', method: 'POST' },
   { path: '/health', method: 'GET' },
 ];
-
-/* ------------------------------- stories ------------------------------ */
 
 export const TableFromResponse: Story = {
   name: 'Table, zero columns declared',
@@ -262,14 +251,11 @@ export const SidebarFromRoutes: Story = {
             { key: 'records', title: 'Records' },
           ],
           overrides: {
-            // Ícone e agrupamento não estão no banco. Rótulo, só quando o
-            // palpite erra: "Eleases" não é palavra.
             '/equipment': { icon: 'mdi-excavator', group: 'operations', order: 1 },
             '/accessory': { icon: 'mdi-toolbox-outline', group: 'operations', order: 2 },
             '/elease': { label: 'Contracts', icon: 'mdi-file-document-outline', group: 'operations', order: 3, badge: 7 },
             '/client': { icon: 'mdi-domain', group: 'records' },
             '/lessee': { icon: 'mdi-account-hard-hat-outline', group: 'records' },
-            // Rota técnica: existe na API, não é tela.
             '/health': { hidden: true },
           },
         }),

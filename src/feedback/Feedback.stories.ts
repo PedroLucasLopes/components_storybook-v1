@@ -28,8 +28,6 @@ export default meta;
 
 type Story = StoryObj;
 
-/* ------------------------------- toasts ------------------------------- */
-
 export const Toasts: Story = {
   parameters: {
     docs: {
@@ -85,8 +83,6 @@ export const Toasts: Story = {
     `,
   }),
 };
-
-/* ------------------------------ dialogs ------------------------------- */
 
 const statuses = [
   { title: 'Available', value: 'AVAILABLE' },
@@ -248,8 +244,6 @@ export const Delete: Story = {
     `,
   }),
 };
-
-/* ------------------------------ loading ------------------------------- */
 
 export const Loading: Story = {
   parameters: {

@@ -1,39 +1,17 @@
 <script setup lang="ts">
-/**
- * Barras para comparar magnitude entre categorias.
- *
- * **Horizontal por padrão.** Rótulo de categoria em tela de gestão é texto
- * ("400L concrete mixer"), e texto deitado na vertical obriga a inclinar a
- * cabeça. Barra horizontal deixa o rótulo na horizontal e ainda acomoda nome
- * longo.
- *
- * **Uma escala só.** Nunca dois eixos. Duas medidas de grandeza diferente são
- * dois gráficos, não um com dois eixos, que é a forma mais fácil de sugerir uma
- * correlação que não existe.
- *
- * **Zero é o começo, sempre.** Barra cortada mente sobre proporção: dobro de
- * pixel vira dobro de valor na cabeça de quem olha.
- *
- * Especificações de marca: extremidade arredondada em 4px só do lado do dado,
- * 2px de folga entre barras vizinhas, grade recessiva, rótulo direto no valor.
- */
 import { computed, ref } from 'vue';
 
 export interface BarDatum {
   label: string;
   value: number;
-  /** Cor da ENTIDADE. Filtrar a lista não pode repintar quem sobrou. */
   color: string;
 }
 
 const props = withDefaults(
   defineProps<{
     data: BarDatum[];
-    /** Formata o valor no rótulo e na dica. */
     format?: (value: number) => string;
-    /** Altura de cada barra. */
     barSize?: number;
-    /** Largura reservada para o rótulo da categoria. */
     labelWidth?: number;
   }>(),
   { barSize: 26, labelWidth: 148 },
@@ -44,12 +22,10 @@ const display = (value: number): string =>
 
 const max = computed(() => Math.max(1, ...props.data.map((d) => d.value)));
 
-/** Largura reservada ao valor, para os numeros alinharem na vertical. */
 const VALUE_WIDTH = 76;
 
 const hovered = ref<number | null>(null);
 
-/** Percentual da largura útil. A escala começa em zero, sempre. */
 const widthOf = (value: number): number => (value / max.value) * 100;
 </script>
 
@@ -78,8 +54,6 @@ const widthOf = (value: number): number => (value / max.value) * 100;
         />
       </div>
 
-      <!-- Rótulo direto em todo valor: são poucas linhas e a leitura exata
-           importa mais que a limpeza aqui. Ver a regra de alívio da paleta. -->
       <span class="dl-bars__value">{{ display(datum.value) }}</span>
     </div>
   </div>
@@ -101,7 +75,6 @@ const widthOf = (value: number): number => (value / max.value) * 100;
   transition: opacity var(--dl-motion-fast, 120ms) var(--dl-easing);
 }
 
-/* Apagar as outras ao passar o mouse guia o olho sem mover nada de lugar. */
 .dl-bars__row--dim {
   opacity: 0.45;
 }
@@ -115,7 +88,6 @@ const widthOf = (value: number): number => (value / max.value) * 100;
 }
 
 .dl-bars__track {
-  /* A trilha é a grade: recessiva, só o suficiente para dar a extensão. */
   background: var(--dl-surface-variant);
   border-radius: 4px;
   height: 100%;
@@ -125,7 +97,6 @@ const widthOf = (value: number): number => (value / max.value) * 100;
 
 .dl-bars__fill {
   height: 100%;
-  /* Arredonda só a extremidade do DADO; a base fica reta, ancorada no zero. */
   border-radius: 0 4px 4px 0;
   transition: width var(--dl-motion-slow, 320ms) var(--dl-easing);
   transform-origin: left center;
@@ -149,8 +120,6 @@ const widthOf = (value: number): number => (value / max.value) * 100;
   outline-offset: 2px;
 }
 
-/* Em telefone o rótulo sobe para cima da barra: 148px de rótulo mais barra
-   numa tela de 375px não deixa espaço para nenhum dos dois. */
 @media (max-width: 599px) {
   .dl-bars__row {
     grid-template-columns: 1fr var(--dl-bar-value);

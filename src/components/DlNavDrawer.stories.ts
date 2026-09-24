@@ -4,16 +4,9 @@ import DlNavDrawer, { type NavGroup } from './DlNavDrawer.vue';
 import DlPageHeader from './DlPageHeader.vue';
 import { providePermissions, type Permission } from '../access/usePermissions';
 
-/**
- * O mesmo componente serve as duas aplicações. O que muda é o manifesto, que
- * vem do backend de cada uma, e a marca, que cada aplicação passa. É por isso
- * que ele não conhece "equipamento", "projeto" nem o escudo do SSO.
- */
-
 interface Brand {
   title: string;
   subtitle: string;
-  /** O mesmo ícone da aba do navegador de cada aplicação. */
   logo: string;
 }
 
@@ -112,7 +105,6 @@ const ssoMenu: NavGroup[] = [
         label: 'Generate key',
         icon: 'mdi-key-plus',
         to: '/keys/new',
-        // Só SUPERADMIN tem esta permissão. Ver o bootstrap do SSO.
         permission: { method: 'POST', path: '/clientkey/generate' },
       },
     ],
