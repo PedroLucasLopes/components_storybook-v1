@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { ref } from 'vue';
+import DlButton from './DlButton.vue';
 import DlSignIn, { type SignInProvider } from './DlSignIn.vue';
+import DlTextField from './DlTextField.vue';
 
 const google: SignInProvider = { id: 'google', label: 'Google', icon: 'mdi-google' };
 
@@ -27,6 +29,60 @@ type Story = StoryObj<typeof DlSignIn>;
 export const Ready: Story = {
   name: 'Request from an application',
   args: { state: 'ready', application: 'KRLoc', providers: [google] },
+};
+
+export const WithCredentials: Story = {
+  name: 'Email and password, with a provider',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The default slot carries the credential form. The divider only appears when ' +
+          'the card offers both a form and a provider.',
+      },
+    },
+  },
+  render: (args) => ({
+    components: { DlSignIn, DlTextField, DlButton },
+    setup: () => ({ args, email: ref(''), password: ref('') }),
+    template: `
+      <DlSignIn v-bind="args">
+        <DlTextField v-model="email" label="Email" type="email" autocomplete="username" />
+        <DlTextField v-model="password" label="Password" type="password" autocomplete="current-password" />
+        <DlButton block size="large" color="primary">Sign in</DlButton>
+      </DlSignIn>
+    `,
+  }),
+  args: { state: 'ready', application: 'KRLoc', providers: [google] },
+};
+
+export const SecondFactor: Story = {
+  name: 'Second factor',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A step of its own: no provider, and the heading and description replace the ' +
+          'default ones. Same card, so the person does not feel moved to another place.',
+      },
+    },
+  },
+  render: (args) => ({
+    components: { DlSignIn, DlTextField, DlButton },
+    setup: () => ({ args, code: ref('') }),
+    template: `
+      <DlSignIn v-bind="args">
+        <DlTextField v-model="code" label="Six digit code" inputmode="numeric" autocomplete="one-time-code" />
+        <DlButton block size="large" color="primary">Confirm</DlButton>
+      </DlSignIn>
+    `,
+  }),
+  args: {
+    state: 'ready',
+    providers: [],
+    heading: 'Two step verification',
+    description: 'Type the code from your authenticator app.',
+  },
 };
 
 export const ConsoleRequest: Story = {

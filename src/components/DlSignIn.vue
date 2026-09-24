@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useSlots } from 'vue';
 import { splitAround, useDotlogText } from '../i18n/useDotlogText';
 import DlButton from './DlButton.vue';
 import DlSkeleton from './DlSkeleton.vue';
@@ -24,6 +24,8 @@ withDefaults(
     pendingProvider?: string | null;
     brand?: string;
     logo?: string;
+    heading?: string | null;
+    description?: string | null;
   }>(),
   {
     application: null,
@@ -32,8 +34,14 @@ withDefaults(
     pendingProvider: null,
     brand: 'SSO',
     logo: 'mdi-shield-key-outline',
+    heading: null,
+    description: null,
   },
 );
+
+const slots = useSlots();
+
+const hasForm = computed(() => !!slots.default);
 
 const emit = defineEmits<{ select: [provider: SignInProvider] }>();
 
@@ -76,9 +84,10 @@ const continueTo = computed(() => splitAround((marker) => t('signIn.continueTo',
       </div>
 
       <div v-else class="dl-signin__ready">
-        <h1 id="dl-signin-title" class="dl-signin__title">{{ t('signIn.title') }}</h1>
+        <h1 id="dl-signin-title" class="dl-signin__title">{{ heading ?? t('signIn.title') }}</h1>
         <p class="dl-signin__text">
-          <template v-if="application">
+          <template v-if="description">{{ description }}</template>
+          <template v-else-if="application">
             {{ continueTo[0] }}<strong class="dl-signin__app">{{ application }}</strong>{{ continueTo[1] }}
           </template>
           <template v-else>{{ t('signIn.continue') }}</template>
@@ -92,7 +101,15 @@ const continueTo = computed(() => splitAround((marker) => t('signIn.continueTo',
           </div>
         </div>
 
-        <div class="dl-signin__providers">
+        <div v-if="hasForm" class="dl-signin__form">
+          <slot />
+        </div>
+
+        <div v-if="hasForm && providers.length > 0" class="dl-signin__divider">
+          <span>{{ t('signIn.or') }}</span>
+        </div>
+
+        <div v-if="providers.length > 0" class="dl-signin__providers">
           <DlButton
             v-for="provider in providers"
             :key="provider.id"
@@ -190,6 +207,30 @@ const continueTo = computed(() => splitAround((marker) => t('signIn.continueTo',
 .dl-signin__app {
   color: var(--dl-on-surface);
   font-weight: 600;
+}
+
+.dl-signin__form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.dl-signin__divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--dl-on-surface-muted);
+}
+
+.dl-signin__divider::before,
+.dl-signin__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--dl-outline);
 }
 
 .dl-signin__providers {
