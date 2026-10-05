@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { VAutocomplete, VSelect } from 'vuetify/components';
 import { useDotlogText } from '../i18n/useDotlogText';
 
@@ -34,9 +34,17 @@ const emit = defineEmits<{ 'update:modelValue': [value: unknown] }>();
 
 const { t } = useDotlogText();
 
+const search = ref('');
+
 const value = computed({
   get: () => props.modelValue,
-  set: (v) => emit('update:modelValue', v),
+  set: (v) => {
+    emit('update:modelValue', v);
+
+    if (props.multiple) {
+      search.value = '';
+    }
+  },
 });
 
 const withSearch = computed(() => props.searchable ?? props.options.length >= 8);
@@ -55,6 +63,7 @@ const component = computed(() => (withSearch.value ? VAutocomplete : VSelect));
       :is="component"
       :id="label"
       v-model="value"
+      :search="withSearch ? search : undefined"
       :items="options"
       :item-title="itemTitle"
       :item-value="itemValue"
@@ -75,6 +84,7 @@ const component = computed(() => (withSearch.value ? VAutocomplete : VSelect));
       variant="outlined"
       :no-data-text="t('select.noOptions')"
       menu-icon="mdi-chevron-down"
+      @update:search="(text: string) => (search = text)"
     >
       <template v-if="loading" #no-data>
         <div class="dl-select__loading">{{ t('select.loadingOptions') }}</div>
