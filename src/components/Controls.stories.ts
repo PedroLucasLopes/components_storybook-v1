@@ -86,6 +86,44 @@ export const Dropdown: Story = {
   }),
 };
 
+export const MultiSearch: Story = {
+  name: 'Multiple choice with search',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Picking an option clears the typed text, so the next one is chosen ' +
+          'without erasing the previous search first. Vuetify keeps the text ' +
+          'on a multiple autocomplete, which left the list filtered down to ' +
+          'the item just chosen.',
+      },
+    },
+  },
+  render: () => ({
+    components: { DlSelect },
+    setup() {
+      const picked = ref<string[]>(['cli-3']);
+
+      return { picked, clients };
+    },
+    template: `
+      <div style="display: grid; gap: 16px; max-width: 420px">
+        <DlSelect
+          v-model="picked"
+          :options="clients"
+          label="Clients"
+          multiple
+          searchable
+          hint="Type to filter, pick, and type again."
+        />
+        <p style="font-size: 13px; color: var(--dl-on-surface-muted)">
+          Picked: {{ picked.join(', ') || 'none' }}
+        </p>
+      </div>
+    `,
+  }),
+};
+
 export const Range: Story = {
   name: 'Numeric range',
   render: () => ({
