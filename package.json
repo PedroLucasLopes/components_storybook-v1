@@ -1,6 +1,6 @@
 {
   "name": "@pedrolucaslopes/dotlog-ui",
-  "version": "0.6.1",
+  "version": "0.6.0",
   "type": "module",
   "description": "Componentes Vuetify, tema e Storybook compartilhados pelos fronts do ecossistema SSO.",
   "license": "UNLICENSED",
@@ -48,18 +48,18 @@
   },
   "devDependencies": {
     "@mdi/font": "7.4.47",
-    "@storybook/addon-docs": "^10.6.0",
-    "@storybook/vue3-vite": "^10.6.0",
+    "@storybook/addon-docs": "^10.6.1",
+    "@storybook/vue3-vite": "^10.6.1",
     "@types/node": "^26.6.2",
-    "@vitejs/plugin-vue": "^6.0.5",
-    "sass-embedded": "^1.98.0",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "sass-embedded": "^1.105.1",
     "storybook": "^10.6.0",
     "typescript": "~5.9.3",
-    "vite": "^8.0.0",
+    "vite": "^8.3.3",
     "vite-plugin-vuetify": "^2.1.3",
-    "vue": "^3.5.30",
-    "vue-i18n": "^11.4.10",
-    "vue-tsc": "^3.2.5",
-    "vuetify": "^4.0.2"
+    "vue": "^3.5.43",
+    "vue-i18n": "^11.4.13",
+    "vue-tsc": "^3.3.12",
+    "vuetify": "^4.2.4"
   }
 }
